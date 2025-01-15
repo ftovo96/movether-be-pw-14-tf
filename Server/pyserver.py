@@ -50,6 +50,7 @@ def activities_api():
     search = request.args.get('search') or ''
     sport = request.args.get('sport') or ''
     location = request.args.get('location') or ''
+    companyId = request.args.get('companyId') or None
     connection = sqlite3.connect('app.db')
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
@@ -64,6 +65,7 @@ def activities_api():
             WHERE ACT.date = ACTIVITY.date
         ) as ACT_TIMES,
         ACT.max_partecipants,
+        COMPANY.id as COMPANY_ID,
         COMPANY.name as COMPANY_NAME
         FROM ACTIVITY as ACT
         LEFT JOIN COMPANY
@@ -72,10 +74,14 @@ def activities_api():
             ACT.SPORT LIKE '%{sport}%' AND
             ACT.LOCATION LIKE '%{location}%' AND
             COMPANY.name LIKE '%{search}%'
+        """
+    if companyId is not None:
+        query += f"""AND COMPANY.id = {companyId}"""
+    query += f"""
         )
         GROUP BY ACT.date
         ORDER BY date(ACT.date) DESC
-        """
+    """
     cursor.execute(query)
     activities = cursor.fetchall()
     connection.close()
@@ -89,6 +95,7 @@ def activities_api():
             "date": activity["act_date"],
             "times": activity["act_times"],
             "max_partecipants": activity["max_partecipants"],
+            "company_id": activity["company_id"],
             "company_name": activity["company_name"]
         }
         # print(act)
@@ -99,7 +106,14 @@ def activities_api():
 
 @app.route("/reservations", methods=['GET'])
 def reservations_api():
-    user_id = 1
+    user_id = request.args.get('userId') or None
+    if (user_id is None):
+        response = jsonify([])
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
+    search = request.args.get('search') or ''
+    sport = request.args.get('sport') or ''
+    location = request.args.get('location') or ''
     connection = sqlite3.connect('app.db')
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
@@ -136,14 +150,22 @@ def reservations_api():
             WHERE (
                 RESERVATION.activity_id = RES.activity_id
             )
-        ) as requested_partecipants
+        ) as requested_partecipants,
+        COMPANY.id AS COMPANY_ID,
+        COMPANY.name AS COMPANY_NAME
         FROM RESERVATION as RES
         LEFT JOIN ACTIVITY as ACT
         ON RES.activity_id = ACT.id
+        LEFT JOIN COMPANY
+        ON ACT.company_id = COMPANY.id
         WHERE (
-            -- user_id = '{user_id}' AND
-            DATE(date) >= DATE('now')
+            user_id = '{user_id}' AND
+            DATE(date) >= DATE('now') AND
+            ACT.SPORT LIKE '%{sport}%' AND
+            ACT.LOCATION LIKE '%{location}%' AND
+            COMPANY.name LIKE '%{search}%'
         )
+        ORDER BY date(ACT.date) DESC
     """
     cursor.execute(query)
     reservations = cursor.fetchall()
@@ -163,6 +185,8 @@ def reservations_api():
             "date": reservation["date"],
             "time": reservation["time"],
             "location": reservation["location"],
+            "company_id": reservation["company_id"],
+            "company_name": reservation["company_name"],
         }
         print(res)
         result.append(res)
@@ -173,20 +197,34 @@ def reservations_api():
 
 @app.route("/reservations_history", methods=['GET'])
 def reservations_history_api():
-    user_id = 1
+    user_id = request.args.get('userId') or None
+    if (user_id is None):
+        response = jsonify([])
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
+    search = request.args.get('search') or ''
+    sport = request.args.get('sport') or ''
+    location = request.args.get('location') or ''
     connection = sqlite3.connect('app.db')
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
     query = f""" SELECT *,
-        FEEDBACK.id as FEEDBACK_ID
+        FEEDBACK.id as FEEDBACK_ID,
+        COMPANY.id as COMPANY_ID,
+        COMPANY.name as COMPANY_NAME
         FROM RESERVATION
-        LEFT JOIN ACTIVITY
-        ON RESERVATION.activity_id = ACTIVITY.id
+        LEFT JOIN ACTIVITY AS ACT
+        ON RESERVATION.activity_id = ACT.id
+        LEFT JOIN COMPANY
+        ON COMPANY.id = ACT.id
         LEFT JOIN FEEDBACK
         ON RESERVATION.id = FEEDBACK.reservation_id
         WHERE (
-            -- user_id = '{user_id}' AND
-            DATE(date) < DATE('now')
+            user_id = '{user_id}' AND
+            DATE(date) < DATE('now') AND
+            ACT.SPORT LIKE '%{sport}%' AND
+            ACT.LOCATION LIKE '%{location}%' AND
+            COMPANY.name LIKE '%{search}%'
         )
     """
     cursor.execute(query)
@@ -207,6 +245,8 @@ def reservations_history_api():
             "feedback_id": reservation["feedback_id"],
             "score": reservation["score"],
             "message": reservation["message"],
+            "company_id": reservation["company_id"],
+            "company_name": reservation["company_name"],
         }
         print(res)
         result.append(res)
@@ -263,6 +303,44 @@ def feedbacks_api():
 def set_feedback_api():
     feedbacks = []
     return [feedback.to_json() for feedback in feedbacks]
+
+@app.route("/sports", methods=['GET'])
+def sports_api():
+    connection = sqlite3.connect('app.db')
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+    query = f""" SELECT DISTINCT SPORT
+        FROM ACTIVITY
+        ORDER BY SPORT ASC
+        """
+    cursor.execute(query)
+    activitySports = cursor.fetchall()
+    connection.close()
+    result = []
+    for activitySport in activitySports:
+        result.append(activitySport["sport"])
+    response = jsonify(result)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+@app.route("/locations", methods=['GET'])
+def locations_api():
+    connection = sqlite3.connect('app.db')
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+    query = f""" SELECT DISTINCT LOCATION
+        FROM ACTIVITY
+        ORDER BY LOCATION ASC
+        """
+    cursor.execute(query)
+    activityLocations = cursor.fetchall()
+    connection.close()
+    result = []
+    for activityLocation in activityLocations:
+        result.append(activityLocation["location"])
+    response = jsonify(result)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 
 def login(email, password):

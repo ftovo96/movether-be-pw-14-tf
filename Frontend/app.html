@@ -232,7 +232,7 @@
                     card.className = 'p-3 border rounded activity-card';
                     const title = document.createElement('p');
                     title.className = 'activity-card_title';
-                    title.innerHTML = `${activity.sport} - <a href="home.html?company=${activity.company_name}">${activity.company_name}</a>`;
+                    title.innerHTML = `${activity.sport} - <a href="company/company.html?companyId=${activity.company_id}&companyName=${activity.company_name}">${activity.company_name}</a>`;
                     card.appendChild(title);
                     card.appendChild(createParagraph(`Data: ${activity.date}`));
                     card.appendChild(createParagraph(`Orari disponibili: ${activity.times.split('; ').join(' - ')}`));
