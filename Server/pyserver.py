@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response
+from flask import Flask, jsonify, request, make_response, redirect, url_for
 import json
 import sqlite3
 
@@ -6,7 +6,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World!</p>"
+    # return "<p>Hello, World!</p>"
+    return redirect('static/activities/activities.html')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login_api():
