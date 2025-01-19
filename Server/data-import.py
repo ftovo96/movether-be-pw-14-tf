@@ -55,7 +55,7 @@ def importReservations():
     createTableQuery = """ CREATE TABLE RESERVATION (
                 id INTEGER PRIMARY KEY,
                 activity_id INTEGER NOT NULL,
-                user_id INTEGER NOT NULL,
+                user_id INTEGER,
                 security_code CHAR(8) NOT NULL,
                 partecipants INTEGER NOT NULL,
                 validated BOOLEAN

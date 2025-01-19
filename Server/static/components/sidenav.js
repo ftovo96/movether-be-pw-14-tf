@@ -9,7 +9,7 @@ const AppSidenav = {
                     <a href="/static/activities/activities.html" class="btn btn-outline-primary" tabindex="-1" role="button">Attività</a>
                     <a href="/static/reservations/reservations.html" class="btn btn-outline-primary" tabindex="-1" role="button">Prenotazioni</a>
                     <!--<a href="/static/reservations-history/reservations-history.html" class="btn btn-outline-primary" tabindex="-1" role="button">Storico prenotazioni</a>-->
-                    <a href="/static/awards/awards.html" class="btn btn-outline-primary" tabindex="-1" role="button">Premi</a>
+                    <a href="/static/rewards/rewards.html" class="btn btn-outline-primary" tabindex="-1" role="button">Premi</a>
                 </div>
             </div>
         </div>`;

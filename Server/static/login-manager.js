@@ -3,6 +3,15 @@ const LoginManager = {
     isLoggedIn: () => {
         return localStorage.getItem('userId') !== null;
     },
+    getUserIdentifier: () => {
+        const savedUserIdentifier = localStorage.getItem('userIdentifier');
+        if (savedUserIdentifier) {
+            return savedUserIdentifier;
+        }
+        const userIdentifier = 'abc123';
+        localStorage.setItem('userIdentifier', userIdentifier);
+        return;
+    },
     getUser: () => {
         const user = {
             id: localStorage.getItem('userId'),
@@ -23,11 +32,14 @@ const LoginManager = {
             localStorage.setItem('userId', response.user.id);
             const userFullName = response.user.name + ' ' + response.user.surname;
             localStorage.setItem('userFullName', userFullName);
+            // Provo ad associare le prenotazioni nel localStorage all'utente...
+            ReservationsManager.clearReservations();
         }
         return response;
     },
     logout: () => {
         localStorage.removeItem('userId');
         localStorage.removeItem('userFullName');
+        ReservationsManager.clearReservations();
     },
 };

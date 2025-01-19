@@ -1,15 +1,23 @@
 "use strict"
 const activitiesContainer = document.getElementById('activities');
-const user = {id: 1, fullName: 'Mario Rossi'};
+const feedbacksContainer = document.getElementById('feedbacks');
+const user = LoginManager.getUser();
 const company = {id: null, name: null};
 
+let modalRef = null;
+let modalReservationId = null;
+
+
 AppNavbar.initNavbar('navbar-container', 'handleLogin', 'logout');
-AppNavbar.updateNavbar(user);
+// AppNavbar.updateNavbar(user);
 
 AppSidenav.initSidenav('sidenav-container');
+AppSidenav.setActiveMenu(0);
+
+BottomNavigationBar.initBottomNavigationBar('bottom-navigation-bar', 0);
 
 initValues();
-loadActivities();
+loadData();
 
 function initValues() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -19,8 +27,10 @@ function initValues() {
     const fromPage = urlParams.get('fromPage');
     if (fromPage) {
         AppSidenav.setActiveMenu(+fromPage);
+        BottomNavigationBar.setActiveMenu(+fromPage);
     } else {
         AppSidenav.setActiveMenu(0);
+        BottomNavigationBar.setActiveMenu(0);
     }
 }
 
@@ -30,7 +40,6 @@ async function loadActivities() {
     loadingElem.classList = 'query-message';
     loadingElem.innerText = 'Caricamento...';
     activitiesContainer.appendChild(loadingElem);
-    await new Promise(r => setTimeout(r, 1000));
     const params = {
         'companyId': company.id,
     };
@@ -66,6 +75,44 @@ async function loadActivities() {
     }
 }
 
+async function loadData() {
+    loadActivities();
+    loadFeedbacks();
+}
+
+async function loadFeedbacks() {
+    feedbacksContainer.replaceChildren();
+    const loadingElem = document.createElement('p');
+    loadingElem.innerText = '';
+    loadingElem.classList = 'query-message';
+    feedbacksContainer.appendChild(loadingElem);
+    var url = new URL(`http://localhost:5000/feedbacks/${company.id}`);
+    const feedbacks = await fetch(url)
+        .then(result => result.json())
+        .catch(() => []);
+        feedbacksContainer.replaceChildren();
+    if (!feedbacks.length) {
+        const noActivitiesElem = document.createElement('p');
+        noActivitiesElem.className = 'query-message';
+        noActivitiesElem.innerText = 'Nessun feedback';
+        feedbacksContainer.appendChild(noActivitiesElem);
+    } else {
+        feedbacks.forEach(feedback => {
+            const card = document.createElement('div');
+            card.className = 'p-3 border rounded activity-card';
+            card.appendChild(createParagraph(`Voto: ${'*'.repeat(feedback.score)}`));
+            if (feedback.message) {
+                const title = document.createElement('p');
+                title.className = 'activity-card_title';
+                title.innerHTML = `${feedback.message}`;
+                card.appendChild(title);
+            }
+            card.appendChild(createParagraph(`${feedback.userName}`));
+            feedbacksContainer.appendChild(card);
+        });
+    }
+}
+
 function createParagraph(textContent) {
     const paragraph = document.createElement('p');
     paragraph.innerText = textContent;
@@ -76,12 +123,11 @@ function goBack() {
     window.history.back();
 }
 
-function handleLogin() {
-    window.location.href = "../login/login.html";
-}
-
 function logout() {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userFullName');
-    AppNavbar.updateNavbar({id: null, fullName: null});
+    LoginManager.logout();
+    user.id = null;
+    user.fullName = null;
+    AppNavbar.updateNavbar(user);
+    loadReservations();
+    updateInterface();
 }

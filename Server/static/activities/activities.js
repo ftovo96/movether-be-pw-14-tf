@@ -249,7 +249,7 @@ async function reserveActivity() {
     const partecipants = document.getElementById('partecipants-select').value;
     const activity = activities.find(activity => activity.time === time);
     console.log(`Reserve activity ${activity.id} at time ${time} for ${partecipants} people`);
-    await fetch('http://localhost:5000/reserveActivity', {
+    const reservation = await fetch('http://localhost:5000/reserveActivity', {
             method: 'POST',
             body: JSON.stringify({
                 "activityId": activity.id,
@@ -259,14 +259,25 @@ async function reserveActivity() {
                 "reservationId": activity.reservationId,
             }),
         })
-        .then(result => {
-            if (result.status === 200) {
-                modalRef.hide();
-                modalRef = null;
-                modalActivityId = null;
-                loadActivities();
-            }
-        });
+        .then(result => result.json())
+        .catch(err => null);
+    if (reservation) {
+        if (!LoginManager.isLoggedIn()) {
+            ReservationsManager.saveReservation(reservation);
+            showReservationCodeModal(reservation);
+        }
+        modalRef.hide();
+        modalRef = null;
+        modalActivityId = null;
+        loadActivities();
+    }
+}
+
+function showReservationCodeModal(reservation) {
+    document.getElementById('reservation-number').innerText = reservation.id;
+    document.getElementById('reservation-security-code').innerText = reservation.securityCode;
+    const modal = document.getElementById('reservationCodeModal');
+    new bootstrap.Modal(modal).show();
 }
 
 // function createParagraph(textContent) {

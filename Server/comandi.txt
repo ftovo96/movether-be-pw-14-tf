@@ -1,2 +1,3 @@
 . .venv/bin/activate
 flask --app hello run
+flask --app pyserver.py run --debug

@@ -9,6 +9,7 @@
     <script src="/static/login-manager.js"></script>
     <script src="/static/components/navbar.js"></script>
     <script src="/static/components/sidenav.js"></script>
+    <script src="/static/components/bottom-navigation-bar.js"></script>
     <link href="/static/styles.css" rel="stylesheet">
     <link href="/static/company/company.css" rel="stylesheet">
 </head>
@@ -24,9 +25,18 @@
                         <button class="btn btn-outline-primary" type="button" onclick="goBack()"><-</button>
                         <span id="company-name">Company name</span>
                     </h2>
-                    <div class="column activities-container" id="activities"></div>
+                    <div>
+                        <h5>Gli ultimi feedback</h5>
+                        <div class="column activities-container" id="feedbacks"></div>
+                    </div>
+                    <div>
+                        <div class="p-3"></div>
+                        <h5 class="mb-3 mt-3">Attività</h5>
+                        <div class="column activities-container" id="activities"></div>
+                    </div>
                 </div>
             </div>
+            <div id="bottom-navigation-bar"></div>
         </div>
     </div>
     <script src="/static/company/company.js"></script>
