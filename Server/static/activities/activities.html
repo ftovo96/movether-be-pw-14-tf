@@ -9,6 +9,7 @@
     <script src="/static/login-manager.js"></script>
     <script src="/static/components/navbar.js"></script>
     <script src="/static/components/sidenav.js"></script>
+    <script src="/static/components/bottom-navigation-bar.js"></script>
     <link href="/static/styles.css" rel="stylesheet">
 </head>
 
@@ -39,8 +40,42 @@
                         </div>
                     </div>
                     <div class="column activities-container" id="activities"></div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="reservationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="reservationModalTitle">Modal title</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-floating">
+                                        <select class="form-select mb-3" id="time-select" aria-label="Floating label select example">
+                                            <option value="1" selected>1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                        </select>
+                                        <label for="floatingSelect">Orario</label>
+                                    </div>
+                                    <div class="form-floating">
+                                        <select class="form-select mb-3" id="partecipants-select" aria-label="Floating label select example">
+                                            <option value="1" selected>1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                        </select>
+                                        <label for="floatingSelect">Posti</label>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                    <button type="button" class="btn btn-primary" onclick="reserveActivity(1)">Prenota</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div id="bottom-navigation-bar"></div>
         </div>
     </div>
     <script src="/static/activities/activities.js"></script>

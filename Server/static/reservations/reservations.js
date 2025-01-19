@@ -1,12 +1,16 @@
 "use strict"
-const reservationsContainer = document.getElementById('reservations');
-const user = {id: 1, fullName: 'Mario Rossi'};
+const user = LoginManager.getUser();
+let modalRef = null;
+let modalReservationId = null;
+
 
 AppNavbar.initNavbar('navbar-container', 'handleLogin', 'logout');
-AppNavbar.updateNavbar(user);
+// AppNavbar.updateNavbar(user);
 
 AppSidenav.initSidenav('sidenav-container');
 AppSidenav.setActiveMenu(1);
+
+BottomNavigationBar.initBottomNavigationBar('bottom-navigation-bar', 1);
 
 const values = {
     search: null,
@@ -23,6 +27,8 @@ sportSelect.addEventListener('input', handleChangeSport);
 
 const locationSelect = document.getElementById('location-select');
 locationSelect.addEventListener('input', handleChangeLocation);
+
+const reservationsContainer = document.getElementById('reservations');
 
 initValues();
 loadReservations();
@@ -141,35 +147,143 @@ async function fetchReservations() {
         noActivitiesElem.innerText = 'Nessuna attività trovata';
         reservationsContainer.appendChild(noActivitiesElem);
     } else {
-        activities.forEach(activity => {
+        activities.forEach(reservation => {
+            const cardContent = `
+                <div>
+                    <p class="activity-card_title">
+                        ${reservation.sport} - <a href="/static/company/company.html?companyId=${reservation.company_id}&companyName=${reservation.company_name}&fromPage=0">${reservation.company_name}</a>
+                    </p>
+                    <p>Data: ${reservation.date} alle ${reservation.time}</p>
+                    <p>Posti disponibili: ${reservation.max_partecipants}</p>
+                    <p>Posti riservati: ${reservation.partecipants}</p>
+                    <p>Località: ${reservation.location}</p>
+                </div>
+                <div class="activity-cart_actions">
+                    <button class="btn btn-primary" onclick="showEditReservationModal('${reservation.id}')">Modifica</button>
+                    <button class="btn btn-danger" onclick="showDeleteReservationModal('${reservation.id}')">Elimina</button>
+                </div>
+            `;
             const card = document.createElement('div');
-            card.className = 'p-3 border rounded activity-card';
-            const title = document.createElement('p');
-            title.className = 'activity-card_title';
-            title.innerHTML = `${activity.sport} - <a href="/static/company/company.html?companyId=${activity.company_id}&companyName=${activity.company_name}&fromPage=1">${activity.company_name}</a>`;
-            card.appendChild(title);
-            card.appendChild(createParagraph(`Data: ${activity.date} alle ${activity.time}`));
-            card.appendChild(createParagraph(`Posti disponibili: ${activity.max_partecipants}`));
-            card.appendChild(createParagraph(`Località: ${activity.location}`));
+            card.classList = 'p-3 border rounded activity-card';
+            card.innerHTML = cardContent;
             reservationsContainer.appendChild(card);
         });
     }
 }
 
-function createParagraph(textContent) {
-    const paragraph = document.createElement('p');
-    paragraph.innerText = textContent;
-    return paragraph;
+function showDeleteReservationModal(reservationId) {
+    const modal = document.getElementById('reservationDeleteModal');
+    modalRef = new bootstrap.Modal(modal);
+    modalRef.show();
+    modalReservationId = reservationId;
 }
 
-function handleLogin() {
-    window.location.href = "../login/login.html";
+async function deleteReservation() {
+    var url = new URL(`http://localhost:5000/deleteReservation/${modalReservationId}`);
+    await fetch(url, { method: 'DELETE', })
+        .then(result => {
+            if (result.status === 200) {
+                modalRef.hide();
+                modalRef = null;
+                modalReservationId = null;
+                loadReservations();
+            }
+        });
+}
+
+async function showEditReservationModal(reservationId) {
+    var url = new URL(`http://localhost:5000/reservations/${reservationId}`);
+    // if (user.id) {
+    //     url.searchParams.append('userId', user.id);
+    // }
+    const activities = await fetch(url)
+        .then(result => result.json());
+    console.log('Edit Reservation ' + reservationId);
+    const modal = document.getElementById('reservationEditModal');
+    document.getElementById('reservationEditModalTitle').innerText = `Modifica prenotazione ${reservationId}`;
+    // Imposto orari selezionabili
+    const timeSelect = document.getElementById('time-select');
+    timeSelect.disabled = false;
+    timeSelect.replaceChildren();
+    activities.forEach((activity, index) => {
+        const option = document.createElement('option');
+        option.value = activity.time;
+        option.innerText = activity.time;
+        if (index === 0) {
+            option.selected = true;
+        }
+        timeSelect.appendChild(option);
+
+    });
+    if (activities.length === 1) {
+        timeSelect.disabled = true;
+    }
+    // Imposto posti selezionabili
+    const partecipantsSelect = document.getElementById('partecipants-select');
+    partecipantsSelect.disabled = false;
+    partecipantsSelect.replaceChildren();
+    const availablePartecipants = activities[0].availablePartecipants;
+    for (var i = 1; i <= availablePartecipants; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.innerText = i;
+        if (i === 1) {
+            option.selected = true;
+        }
+        partecipantsSelect.appendChild(option);
+    }
+    if (availablePartecipants === 1) {
+        partecipantsSelect.disabled = true;
+    }
+    modalRef = new bootstrap.Modal(modal);
+    modalRef.show();
+    modalReservationId = reservationId;
+}
+
+async function editReservation() {
+    var url = new URL(`http://localhost:5000/reservations/${modalReservationId}`);
+    // if (user.id) {
+    //     url.searchParams.append('userId', user.id);
+    // }
+    const activities = await fetch(url)
+        .then(result => result.json());
+    const time = document.getElementById('time-select').value;
+    const partecipants = document.getElementById('partecipants-select').value;
+    const activity = activities.find(activity => activity.time === time);
+    console.log(`Reserve activity ${activity.id} at time ${time} for ${partecipants} people`);
+    await fetch(`http://localhost:5000/updateReservation/${modalReservationId}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                "activityId": activity.id,
+                // "time": time,
+                "partecipants": partecipants,
+                "userId": user.id,
+            }),
+        })
+        .then(result => {
+            if (result.status === 200) {
+                modalRef.hide();
+                modalRef = null;
+                modalReservationId = null;
+                loadReservations();
+            }
+        });
 }
 
 function logout() {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userFullName');
+    LoginManager.logout();
     user.id = null;
     user.fullName = null;
-    AppNavbar.updateNavbar({id: null, fullName: ''});
+    AppNavbar.updateNavbar(user);
+    loadReservations();
 }
+
+window.addEventListener('pageshow', () => {
+    console.log('x');
+    const currentUser = LoginManager.getUser();
+    if (currentUser.id !== user.id) {
+        user.id = currentUser.id;
+        user.fullName = currentUser.fullName;
+        loadReservations();
+    }
+});

@@ -1,8 +1,11 @@
 from flask import Flask, jsonify, request, make_response, redirect, url_for
 import json
 import sqlite3
+import random
 
 app = Flask(__name__)
+
+databaseName = "test-db.db"
 
 @app.route("/")
 def hello_world():
@@ -52,7 +55,7 @@ def activities_api():
     sport = request.args.get('sport') or ''
     location = request.args.get('location') or ''
     companyId = request.args.get('companyId') or None
-    connection = sqlite3.connect('app.db')
+    connection = sqlite3.connect('test-db.db')
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
     query = f""" SELECT 
@@ -66,6 +69,7 @@ def activities_api():
             WHERE ACT.date = ACTIVITY.date
         ) as ACT_TIMES,
         ACT.max_partecipants,
+        ACT.allow_anonymous,
         COMPANY.id as COMPANY_ID,
         COMPANY.name as COMPANY_NAME
         FROM ACTIVITY as ACT
@@ -81,7 +85,9 @@ def activities_api():
     query += f"""
         )
         GROUP BY ACT.date
-        ORDER BY date(ACT.date) DESC
+        ORDER BY 
+            date(ACT.date) DESC,
+            ACT.time DESC
     """
     cursor.execute(query)
     activities = cursor.fetchall()
@@ -97,10 +103,293 @@ def activities_api():
             "times": activity["act_times"],
             "max_partecipants": activity["max_partecipants"],
             "company_id": activity["company_id"],
-            "company_name": activity["company_name"]
+            "company_name": activity["company_name"],
+            "allowAnonymous": activity["allow_anonymous"],
         }
         # print(act)
         result.append(act)
+    response = jsonify(result)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+@app.route('/activities/<activity_id>')
+def activities_for_reservation(activity_id):
+    connection = sqlite3.connect('app.db')
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+    user_id = request.args.get('userId') or 0
+    query = f""" SELECT *,
+        (
+            SELECT COALESCE(SUM(RESERVATION.partecipants), 0)
+            FROM RESERVATION
+            WHERE (
+                RESERVATION.user_id != {user_id} AND
+                RESERVATION.activity_id = ACT.id
+            )
+        ) AS reserved_partecipants,
+        (
+            SELECT RESERVATION.id
+            FROM RESERVATION
+            WHERE (
+                RESERVATION.user_id = {user_id} AND
+                RESERVATION.activity_id = ACT.id
+            )
+        ) AS reservation_id
+        FROM ACTIVITY as ACT
+        WHERE date = (
+            SELECT DATE
+            FROM ACTIVITY
+            WHERE ID = {activity_id}
+        )
+    """
+    cursor.execute(query)
+    activities = cursor.fetchall()
+    connection.close()
+    # print(activities)
+    result = []
+    for activity in activities:
+        act = {
+            "id": activity["id"],
+            "time": activity["time"],
+            "availablePartecipants": activity["max_partecipants"] - activity["reserved_partecipants"],
+            "reservationId": activity["reservation_id"],
+        }
+        # print(act)
+        result.append(act)
+    response = jsonify(result)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+# @app.route('/activities/<activity_id>')
+# def show_post(activity_id):
+#     connection = sqlite3.connect('app.db')
+#     connection.row_factory = sqlite3.Row
+#     cursor = connection.cursor()
+#     user_id = request.args.get('userId') or 0
+#     query = f""" SELECT 
+#         ACT.id as ID,
+#         ACT.location as LOCATION,
+#         ACT.sport as SPORT,
+#         ACT.date as ACT_DATE, 
+#         (
+#             SELECT GROUP_CONCAT(time, '; ') 
+#             FROM ACTIVITY
+#             WHERE ACT.date = ACTIVITY.date
+#         ) as ACT_TIMES,
+#         ACT.max_partecipants,
+#         (
+#             SELECT COALESCE(SUM(RESERVATION.partecipants), 0)
+#             FROM RESERVATION
+#             WHERE RESERVATION.activity_id = {activity_id} AND
+#             RESERVATION.user_id != {user_id}
+#         ) AS reserved_partecipants,
+#         COMPANY.id as COMPANY_ID,
+#         COMPANY.name as COMPANY_NAME
+#         FROM ACTIVITY as ACT
+#         LEFT JOIN COMPANY
+#         ON ACT.company_id = COMPANY.id
+#         WHERE ACT.ID = {activity_id}
+#     """
+#     cursor.execute(query)
+#     activity = cursor.fetchone()
+#     connection.close()
+#     result = {
+#         "id": activity["id"],
+#         "location": activity["location"],
+#         "sport": activity["sport"],
+#         "date": activity["act_date"],
+#         "times": activity["act_times"],
+#         "max_partecipants": activity["max_partecipants"],
+#         "reserved_partecipants": activity["reserved_partecipants"],
+        
+#         "company_id": activity["company_id"],
+#         "company_name": activity["company_name"]
+#     }
+#     response = jsonify(result)
+#     response.headers.add("Access-Control-Allow-Origin", "*")
+#     return response
+
+@app.route('/reserveActivity', methods=['POST'])
+def reserveActivity():
+    connection = sqlite3.connect('app.db')
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+    data = json.loads(request.data)
+    activityId = data['activityId']
+    partecipants = data['partecipants']
+    userId = data['userId'] or None
+    # reservationId = data['reservationId']
+    # Elimino eventuale vecchia prenotazione
+    # if reservationId:
+    query = f"""
+        DELETE FROM RESERVATION
+        WHERE ACTIVITY_ID = {activityId}
+    """
+    cursor.execute(query)
+    connection.commit()
+    # Creo prenotazione
+    securityCode = str(hash(random.random()))[0:8]
+    query = f"""
+        INSERT INTO RESERVATION (activity_id, user_id, security_code, partecipants) 
+        VALUES (?,?,?,?)
+    """
+    cursor.execute(query, (activityId, userId, securityCode, partecipants))
+    query = f"""
+            SELECT * FROM RESERVATION
+            WHERE ID = {cursor.lastrowid}
+        """
+    cursor.execute(query)
+    reservation = cursor.fetchone()
+    result = {
+        "id": reservation["id"],
+        "securityCode": reservation["security_code"],
+    }
+    connection.commit()
+    connection.close()
+    response = jsonify(result)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+@app.route('/reservations/<reservationId>')
+def activities_for_reservation_edit(reservationId):
+    connection = sqlite3.connect('app.db')
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+    # user_id = request.args.get('userId') or 0
+    query = f""" SELECT *,
+        (
+            SELECT COALESCE(SUM(RESERVATION.partecipants), 0)
+            FROM RESERVATION
+            WHERE (
+                RESERVATION.activity_id = ACT.id AND
+                RESERVATION.id != {reservationId}
+            )
+        ) AS reserved_partecipants,
+        (
+            SELECT RESERVATION.id
+            FROM RESERVATION
+            WHERE (
+                RESERVATION.activity_id = ACT.id
+            )
+        ) AS reservation_id
+        FROM ACTIVITY as ACT
+        WHERE 
+            date = (
+                SELECT DATE
+                FROM ACTIVITY
+                WHERE ID = (
+                    SELECT RESERVATION.activity_id
+                    FROM RESERVATION
+                    WHERE RESERVATION.id = {reservationId}
+                )
+            ) AND
+            (
+                ACT.ID IN (
+                    SELECT RESERVATION.activity_id
+                    FROM RESERVATION
+                    WHERE RESERVATION.id = {reservationId}
+                ) OR
+                ACT.ID NOT IN (
+                    SELECT RESERVATION.activity_id
+                    FROM RESERVATION
+                )
+            )
+            
+    """
+    cursor.execute(query)
+    activities = cursor.fetchall()
+    connection.close()
+    # print(activities)
+    result = []
+    for activity in activities:
+        act = {
+            "id": activity["id"],
+            "time": activity["time"],
+            "availablePartecipants": activity["max_partecipants"] - activity["reserved_partecipants"],
+            "reservationId": activity["reservation_id"],
+        }
+        # print(act)
+        result.append(act)
+    response = jsonify(result)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+@app.route('/deleteReservation/<reservationId>', methods=['DELETE'])
+def deleteReservation(reservationId):
+    connection = sqlite3.connect('app.db')
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+    if reservationId:
+        query = f"""
+            DELETE FROM RESERVATION
+            WHERE ID = {reservationId}
+        """
+        cursor.execute(query)
+        connection.commit()
+        wasDeleted = True
+    result = {
+        "result": 'OK' if wasDeleted else 'KO',
+    }
+    connection.close()
+    response = jsonify(result)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+@app.route('/updateReservation/<reservationId>', methods=['PUT'])
+def updateReservation(reservationId):
+    connection = sqlite3.connect('app.db')
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+    data = json.loads(request.data)
+    activityId = data['activityId']
+    partecipants = data['partecipants']
+    userId = data['userId'] or None
+    # Non serve fare controlli su altre prenotazioni già effettuate
+    # per la stessa attività ad un orario diverso perchè
+    # non sono selezionabili dall'utente
+
+
+
+    # activityReservationId = data['reservationId']
+    # Elimino eventuale vecchia prenotazione (ma solo se
+    # è diversa da quella che andrei a modificare)
+    # if activityReservationId is None or activityReservationId != reservationId:
+    # query = f"""
+    #     DELETE FROM RESERVATION
+    #     WHERE ID = {reservationId}
+    # """
+    # cursor.execute(query)
+    # connection.commit()
+    # if (activityReservationId):
+    # Creo prenotazione
+    # securityCode = str(hash(random.random()))[0:8]
+    # query = f"""
+    #     INSERT INTO RESERVATION (activity_id, user_id, security_code, partecipants) 
+    #     VALUES (?,?,?,?)
+    # """
+    # cursor.execute(query, (activityId, userId, securityCode, partecipants))
+    # else:
+    # Modifico prenotazione esistente
+    query = f"""
+        UPDATE RESERVATION 
+        SET
+            activity_id = {activityId},
+            user_id = {userId},
+            partecipants = {partecipants} 
+        WHERE ID = {reservationId}
+    """
+    cursor.execute(query)
+    connection.commit()
+    query = f"""
+            SELECT * FROM RESERVATION
+            WHERE ID = {reservationId}
+        """
+    cursor.execute(query)
+    reservation = cursor.fetchone()
+    result = {
+        "id": reservation["id"],
+        "securityCode": reservation["security_code"],
+    }
+    connection.close()
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
@@ -161,12 +450,14 @@ def reservations_api():
         ON ACT.company_id = COMPANY.id
         WHERE (
             user_id = '{user_id}' AND
-            DATE(date) >= DATE('now') AND
+            --DATE(date) >= DATE('now') AND
             ACT.SPORT LIKE '%{sport}%' AND
             ACT.LOCATION LIKE '%{location}%' AND
             COMPANY.name LIKE '%{search}%'
         )
-        ORDER BY date(ACT.date) DESC
+        ORDER BY 
+            date(ACT.date) DESC,
+            ACT.time DESC
     """
     cursor.execute(query)
     reservations = cursor.fetchall()
