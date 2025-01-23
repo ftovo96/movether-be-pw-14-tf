@@ -45,6 +45,9 @@ async function loadActivities() {
         'companyId': company.id,
     };
     var url = new URL('http://localhost:5000/activities');
+    if (user.id) {
+        url.searchParams.append('userId', user.id);
+    }
     Object.keys(params)
         .forEach(key => {
             if (!params[key]) return;
@@ -61,8 +64,24 @@ async function loadActivities() {
         activitiesContainer.appendChild(noActivitiesElem);
     } else {
         activities.forEach(activity => {
-            const cardContent = `
+            let badge;
+            let isAvailable;
+            if (LoginManager.isLoggedIn()) {
+                badge = `<span class="badge text-bg-success">Disponibile</span>`;
+                isAvailable = true;
+            } else if (activity.allowAnonymous === "true") {
+                badge = `<span class="badge text-bg-primary">Prenotazione anonima</span>`;
+                isAvailable = true;
+            } else {
+                badge = `<span class="badge text-bg-danger">Non disponibile</span>`;
+                isAvailable = false;
+            }
+            if (activity.isBanned) {
+                isAvailable = false;
+            }
+            let cardContent = `
             <div>
+                <div class="activity-card_badge">${badge}</div>
                 <p class="activity-card_title">
                     ${activity.sport} - <a href="/static/company/company.html?companyId=${activity.company_id}&companyName=${activity.company_name}&fromPage=0">${activity.company_name}</a>
                 </p>
@@ -71,13 +90,24 @@ async function loadActivities() {
                 <p><i class="bi bi-people"></i> Posti disponibili: ${activity.max_partecipants}</p>
                 <p><i class="bi bi-geo"></i> Località: ${activity.location}</p>
             </div>
-            <div class="activity-cart_actions">
-                <button class="btn btn-primary" onclick="showReserveActivityModal('${activity.id}')">Prenota</button>
-            </div>
-        `;
-        const card = document.createElement('div');
-        card.classList = 'p-3 border rounded activity-card';
-        card.innerHTML = cardContent;
+            `;
+            if (isAvailable) {
+                cardContent += `<div class="activity-cart_actions">
+                        <button class="btn btn-primary" onclick="showReserveActivityModal('${activity.id}')">Prenota</button>
+                    </div>`;
+            } else if (activity.isBanned) {
+                cardContent += `
+                    <div class="alert alert-danger" role="alert">
+                        Hai effettuato troppe prenotazioni non godute!
+                    </div>
+                `;
+            }
+            const card = document.createElement('div');
+            card.classList = 'p-3 border rounded activity-card';
+            if (!isAvailable) {
+                card.classList.add('activity-card_disabled');
+            }
+            card.innerHTML = cardContent;
             activitiesContainer.appendChild(card);
         });
     }

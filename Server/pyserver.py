@@ -56,6 +56,7 @@ def activities_api():
     sport = request.args.get('sport') or ''
     location = request.args.get('location') or ''
     companyId = request.args.get('companyId') or None
+    userId = request.args.get('userId') or 0
     connection = sqlite3.connect('test-db.db')
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
@@ -72,14 +73,27 @@ def activities_api():
         ACT.max_partecipants,
         ACT.allow_anonymous,
         COMPANY.id as COMPANY_ID,
-        COMPANY.name as COMPANY_NAME
+        COMPANY.name as COMPANY_NAME,
+        (
+            SELECT count(ACTIVITY.id)
+            FROM ACTIVITY
+            LEFT JOIN RESERVATION
+            ON RESERVATION.activity_id = ACTIVITY.id
+            WHERE (
+                RESERVATION.validated = "False" AND
+                RESERVATION.user_id = {userId} AND
+                ACTIVITY.company_id = ACT.company_id AND
+                ACTIVITY.date > DATE('now', '-30 day')
+            )
+        ) as BAN_COUNT
         FROM ACTIVITY as ACT
         LEFT JOIN COMPANY
         ON ACT.company_id = COMPANY.id
         WHERE (
             ACT.SPORT LIKE '%{sport}%' AND
             ACT.LOCATION LIKE '%{location}%' AND
-            COMPANY.name LIKE '%{search}%'
+            COMPANY.name LIKE '%{search}%' AND
+            ACT.date >=  DATE('now')
         """
     if companyId is not None:
         query += f"""AND COMPANY.id = {companyId}"""
@@ -105,6 +119,7 @@ def activities_api():
             "max_partecipants": activity["max_partecipants"],
             "company_id": activity["company_id"],
             "company_name": activity["company_name"],
+            "isBanned": activity["ban_count"] >= 3,
         }
         if activity["allow_anonymous"] == "True":
             act["allowAnonymous"] = "true"

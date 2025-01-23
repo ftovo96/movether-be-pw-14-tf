@@ -135,10 +135,13 @@ async function fetchActivities() {
     activitiesContainer.appendChild(loadingElem);
     await new Promise(r => setTimeout(r, 1000));
     var url = new URL('http://localhost:5000/activities');
+    if (user.id) {
+        url.searchParams.append('userId', user.id);
+    }
     Object.keys(values)
         .forEach(key => {
             if (!values[key]) return;
-            url.searchParams.append(key, values[key])
+            url.searchParams.append(key, values[key]);
         });
     const activities = await fetch(url)
         .then(result => result.json())
@@ -179,6 +182,9 @@ async function fetchActivities() {
                 badge = `<span class="badge text-bg-danger">Non disponibile</span>`;
                 isAvailable = false;
             }
+            if (activity.isBanned) {
+                isAvailable = false;
+            }
             let cardContent = `
                 <div>
                     <div class="activity-card_badge">${badge}</div>
@@ -191,9 +197,15 @@ async function fetchActivities() {
                     <p><i class="bi bi-geo"></i> Località: ${activity.location}</p>
                 </div>`;
             if (isAvailable) {
-            cardContent += `<div class="activity-cart_actions">
-                    <button class="btn btn-primary" onclick="showReserveActivityModal('${activity.id}')">Prenota</button>
-                </div>`;
+                cardContent += `<div class="activity-cart_actions">
+                        <button class="btn btn-primary" onclick="showReserveActivityModal('${activity.id}')">Prenota</button>
+                    </div>`;
+            } else if (activity.isBanned) {
+                cardContent += `
+                    <div class="alert alert-danger" role="alert">
+                        Hai effettuato troppe prenotazioni non godute!
+                    </div>
+                `;
             }
             const card = document.createElement('div');
             card.classList = 'p-3 border rounded activity-card';
