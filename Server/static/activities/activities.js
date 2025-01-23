@@ -167,22 +167,39 @@ async function fetchActivities() {
             // button.onclick = `reserveActivity(${activity.id})`;
             // button.innerText = 'Prenota';
             // buttonContainer.appendChild
-            const cardContent = `
+            let badge;
+            let isAvailable;
+            if (LoginManager.isLoggedIn()) {
+                badge = `<span class="badge text-bg-success">Disponibile</span>`;
+                isAvailable = true;
+            } else if (activity.allowAnonymous === "true") {
+                badge = `<span class="badge text-bg-primary">Prenotazione anonima</span>`;
+                isAvailable = true;
+            } else {
+                badge = `<span class="badge text-bg-danger">Non disponibile</span>`;
+                isAvailable = false;
+            }
+            let cardContent = `
                 <div>
+                    <div class="activity-card_badge">${badge}</div>
                     <p class="activity-card_title">
                         ${activity.sport} - <a href="/static/company/company.html?companyId=${activity.company_id}&companyName=${activity.company_name}&fromPage=0">${activity.company_name}</a>
                     </p>
-                    <p>Data: ${activity.date}</p>
-                    <p>Orari disponibili: ${activity.times.split('; ').join(' - ')}</p>
-                    <p>Posti disponibili: ${activity.max_partecipants}</p>
-                    <p>Località: ${activity.location}</p>
-                </div>
-                <div class="activity-cart_actions">
+                    <p><i class="bi bi-calendar-week"></i> Data: ${new Date(activity.date).toLocaleDateString()}</p>
+                    <p><i class="bi bi-clock"></i> Orari disponibili: ${activity.times.split('; ').join(' - ')}</p>
+                    <p><i class="bi bi-people"></i> Posti disponibili: ${activity.max_partecipants}</p>
+                    <p><i class="bi bi-geo"></i> Località: ${activity.location}</p>
+                </div>`;
+            if (isAvailable) {
+            cardContent += `<div class="activity-cart_actions">
                     <button class="btn btn-primary" onclick="showReserveActivityModal('${activity.id}')">Prenota</button>
-                </div>
-            `;
+                </div>`;
+            }
             const card = document.createElement('div');
             card.classList = 'p-3 border rounded activity-card';
+            if (!isAvailable) {
+                card.classList.add('activity-card_disabled');
+            }
             card.innerHTML = cardContent;
             activitiesContainer.appendChild(card);
         });
@@ -230,7 +247,7 @@ async function showReserveActivityModal(activityId) {
         }
         partecipantsSelect.appendChild(option);
     }
-    if (availablePartecipants === 1) {
+    if (availablePartecipants === 1 || !LoginManager.isLoggedIn()) {
         partecipantsSelect.disabled = true;
     }
     modalRef = new bootstrap.Modal(modal);
@@ -309,6 +326,7 @@ function logout() {
     user.id = null;
     user.fullName = null;
     AppNavbar.updateNavbar(user);
+    loadActivities();
 }
 
 // window.addEventListener('popstate', function(event) {
@@ -324,3 +342,15 @@ function logout() {
 // window.onpageshow = function() {
 //     updateUser();
 // };
+
+window.addEventListener('pageshow', () => {
+    const currentUser = LoginManager.getUser();
+    if (currentUser.id !== user.id) {
+        user.id = currentUser.id;
+        user.fullName = currentUser.fullName;
+        // updateInterface();
+        loadActivities();
+    } else {
+        // updateInterface();
+    }
+});

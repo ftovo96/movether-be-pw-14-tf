@@ -8,7 +8,6 @@ const LoginManager = {
             id: localStorage.getItem('userId'),
             fullName: localStorage.getItem('abc'),
         };
-        debugger;
         return user;
     },
     login: async (email, password) => {
@@ -23,7 +22,6 @@ const LoginManager = {
         if (response.result === 'OK') {
             localStorage.setItem('userId', response.user.id);
             const userFullName = response.user.name + ' ' + response.user.surname;
-            debugger;
             localStorage.setItem('abc', userFullName);
         }
         return response;

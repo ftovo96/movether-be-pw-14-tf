@@ -1,6 +1,6 @@
-"reservationId","score","message"
-1,4,Ottima!
-2,5,Tosta ma divertente
-3,5,None
-4,3,None
-7,5,Parteciperò anche alla prossima!
+"reservationId","score","message","timestamp"
+1,4,Ottima!,1737631707
+2,5,Tosta ma divertente,1737631707
+3,5,None,1737631707
+4,3,None,1737631707
+7,5,Parteciperò anche alla prossima!,1737631707

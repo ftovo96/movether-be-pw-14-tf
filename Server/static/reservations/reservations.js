@@ -152,18 +152,35 @@ async function fetchReservations() {
         reservationsContainer.appendChild(noActivitiesElem);
     } else {
         activities.forEach(reservation => {
+            let badge;
+            const reservationDate = new Date(`${reservation.date} ${reservation.time}`);
+            const hasExpired = Date.now() > reservationDate;
+            const isExpiring = (Date.now() - reservationDate) < (24 * 60 * 60 * 1000);
+            const isDisabled = hasExpired && !isExpiring && reservation.validated === "false";
+            if (reservation.validated === "true") {
+                badge = `<span class="badge text-bg-success">Validata</span>`;
+            } else if (hasExpired && reservation.validated === "false") {
+                badge = `<span class="badge text-bg-danger">Scaduta</span>`;
+            } else if (hasExpired && !reservation.validated) {
+                badge = `<span class="badge text-bg-warning">In attesa di validazione</span>`;
+            } else if (isExpiring) {
+                badge = `<span class="badge text-bg-warning">In scandenza</span>`;
+            } else {
+                badge = `<span class="badge text-bg-success">Disponibile</span>`;
+            }
             let cardContent = `
                 <div>
+                    <div class="activity-card_badge">${badge}</div>
                     <p class="activity-card_title">
                         ${reservation.sport} - <a href="/static/company/company.html?companyId=${reservation.company_id}&companyName=${reservation.company_name}&fromPage=1">${reservation.company_name}</a>
                     </p>
-                    <p>Data: ${reservation.date} alle ${reservation.time}</p>
-                    <p>Posti disponibili: ${reservation.max_partecipants}</p>
-                    <p>Posti riservati: ${reservation.partecipants}</p>
-                    <p>Località: ${reservation.location}</p>
+                    <p><i class="bi bi-calendar-week"></i> Data: ${new Date(reservation.date).toLocaleDateString()} alle ${reservation.time}</p>
+                    <p><i class="bi bi-clock"></i> Posti disponibili: ${reservation.max_partecipants}</p>
+                    <p><i class="bi bi-people"></i> Posti riservati: ${reservation.partecipants}</p>
+                    <p><i class="bi bi-geo"></i> Località: ${reservation.location}</p>
                 </div>
             `;
-            if (Date.now < new Date(`${reservation.date} ${reservation.time}`)) {
+            if (Date.now() < new Date(`${reservation.date} ${reservation.time}`)) {
                 cardContent += `<div class="activity-cart_actions">
                     <button class="btn btn-primary" onclick="showEditReservationModal('${reservation.id}')">Modifica</button>
                     <button class="btn btn-danger" onclick="showDeleteReservationModal('${reservation.id}')">Elimina</button>
@@ -175,6 +192,9 @@ async function fetchReservations() {
             }
             const card = document.createElement('div');
             card.classList = 'p-3 border rounded activity-card';
+            if (isDisabled) {
+                card.classList.add('activity-card_disabled');
+            }
             card.innerHTML = cardContent;
             reservationsContainer.appendChild(card);
         });
@@ -242,7 +262,7 @@ async function showEditReservationModal(reservationId) {
         }
         partecipantsSelect.appendChild(option);
     }
-    if (availablePartecipants === 1) {
+    if (availablePartecipants === 1 || !LoginManager.isLoggedIn()) {
         partecipantsSelect.disabled = true;
     }
     modalRef = new bootstrap.Modal(modal);

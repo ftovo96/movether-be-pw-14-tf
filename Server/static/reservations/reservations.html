@@ -13,6 +13,7 @@
     <script src="/static/components/bottom-navigation-bar.js"></script>
     <link href="/static/styles.css" rel="stylesheet">
     <link href="/static/reservations/reservations.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body>
@@ -26,7 +27,7 @@
                     <div id="filters">
                         <div class="input-group mb-3">
                             <input id="search-input" type="text" class="form-control" placeholder="Cerca..." aria-label="Cerca...">
-                            <span class="input-group-text">@</span>
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
                         </div>
                         <div class="d-flex flex-row flex-wrap mb-3 filters-container">
                             <div class="d-flex flex-row align-content-center filter-select-container">
@@ -78,21 +79,27 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="form-floating">
-                                        <select class="form-select mb-3" id="time-select" aria-label="Floating label select example">
-                                            <option value="1" selected>1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                        </select>
-                                        <label for="floatingSelect">Orario</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                                        <div class="form-floating">
+                                            <select class="form-select" id="time-select" aria-label="Floating label select example">
+                                                <option value="1" selected>1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                            </select>
+                                            <label for="floatingSelect">Orario</label>
+                                        </div>
                                     </div>
-                                    <div class="form-floating">
-                                        <select class="form-select mb-3" id="partecipants-select" aria-label="Floating label select example">
-                                            <option value="1" selected>1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                        </select>
-                                        <label for="floatingSelect">Posti</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text"><i class="bi bi-people"></i></span>
+                                        <div class="form-floating">
+                                            <select class="form-select" id="partecipants-select" aria-label="Floating label select example">
+                                                <option value="1" selected>1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                            </select>
+                                            <label for="floatingSelect">Posti</label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -112,18 +119,24 @@
                                 </div>
                                 <div class="modal-body">
                                     <form id="anonymous-reservation-form" class="form-floating needs-validation">
-                                        <div class="form-floating mb-3">
-                                            <input type="number" class="form-control" id="reservation-number" required>
-                                            <label for="floatingInput">Numero prenotazione</label>
-                                            <div class="invalid-feedback">
-                                                Campo obbligatorio
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                                            <div class="form-floating">
+                                                <input type="number" class="form-control" id="reservation-number" required>
+                                                <label for="floatingInput">Numero prenotazione</label>
+                                                <div class="invalid-feedback">
+                                                    Campo obbligatorio
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="reservation-security-code" required>
-                                            <label for="floatingInput">Codice di sicurezza</label>
-                                            <div class="invalid-feedback">
-                                                Campo obbligatorio
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" id="reservation-security-code" required>
+                                                <label for="floatingInput">Codice di sicurezza</label>
+                                                <div class="invalid-feedback">
+                                                    Campo obbligatorio
+                                                </div>
                                             </div>
                                         </div>
                                     </form>
@@ -146,18 +159,24 @@
                                 </div>
                                 <div class="modal-body">
                                     <form id="feedback-form" class="form-floating needs-validation">
-                                        <div class="form-floating mb-3">
-                                            <input type="number" class="form-control" id="feedback-score" min="1" max="5" required>
-                                            <label for="floatingInput">Punteggio</label>
-                                            <div class="invalid-feedback">
-                                                Inserisci un valore tra 1 e 5
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="bi bi-star"></i></span>
+                                            <div class="form-floating">
+                                                <input type="number" class="form-control" id="feedback-score" min="1" max="5" required>
+                                                <label for="floatingInput">Punteggio (da 1 a 5)</label>
+                                                <div class="invalid-feedback">
+                                                    Inserisci un valore tra 1 e 5
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="form-floating mb-3">
-                                            <textarea class="form-control" id="feedback-message" placeholder="Descrivi la tua esperienza"></textarea>
-                                            <label for="floatingInput">Messaggio (opzionale)</label>
-                                            <div class="invalid-feedback">
-                                                Campo obbligatorio
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="bi bi-chat"></i></span>
+                                            <div class="form-floating">
+                                                <textarea class="form-control" id="feedback-message" placeholder="Descrivi la tua esperienza"></textarea>
+                                                <label for="floatingInput">Messaggio (opzionale)</label>
+                                                <div class="invalid-feedback">
+                                                    Campo obbligatorio
+                                                </div>
                                             </div>
                                         </div>
                                     </form>

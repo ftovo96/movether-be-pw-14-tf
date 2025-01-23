@@ -8,9 +8,9 @@ const LoginManager = {
         if (savedUserIdentifier) {
             return savedUserIdentifier;
         }
-        const userIdentifier = 'abc123';
+        const userIdentifier = Math.random() * 10000000000 + '_';
         localStorage.setItem('userIdentifier', userIdentifier);
-        return;
+        return userIdentifier;
     },
     getUser: () => {
         const user = {
@@ -33,13 +33,15 @@ const LoginManager = {
             const userFullName = response.user.name + ' ' + response.user.surname;
             localStorage.setItem('userFullName', userFullName);
             // Provo ad associare le prenotazioni nel localStorage all'utente...
-            ReservationsManager.clearReservations();
+            await ReservationsManager.linkReservations(response.user.id);
         }
         return response;
     },
     logout: () => {
         localStorage.removeItem('userId');
         localStorage.removeItem('userFullName');
+        localStorage.removeItem('userIdentifier');
         ReservationsManager.clearReservations();
     },
 };
+LoginManager.getUserIdentifier();

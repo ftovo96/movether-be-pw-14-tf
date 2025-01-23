@@ -40,6 +40,15 @@
     justify-content: space-between;
 }
 
+.activity-card_disabled {
+    opacity: 0.5;
+    background-color: lightgray;
+}
+
+/* .activity-card_badge {
+    text-align: right;
+} */
+
 .activity-card_title {
     font-size: 20px;
     font-weight: bold;
@@ -66,9 +75,10 @@
 }
 
 .user-avatar {
-    height: 32px;
+    /* height: 32px;
     width: 32px;
-    background-color: orange;
+    background-color: orange; */
+    font-size: 24px;
     margin-right: 8px;
 }
 
@@ -121,4 +131,9 @@
 .filter-select {
     width: unset;
     overflow: hidden;
+}
+
+.login-icon-presentation {
+    text-align: center;
+    font-size: 64px;
 }

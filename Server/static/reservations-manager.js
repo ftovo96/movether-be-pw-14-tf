@@ -7,9 +7,14 @@
  */
 function saveReservation(reservation) {
     const reservations = getReservations();
+
     if (reservation.length) {
         const index = reservations.findIndex(res => res.id === reservation.id);
-        reservations[index] = reservation;
+        if (index !== -1) {
+            reservations[index] = reservation;
+        } else {
+            reservations.push(reservation);
+        }
     } else {
         reservations.push(reservation);
     }
@@ -53,9 +58,41 @@ function clearReservations() {
     localStorage.removeItem('reservations');
 }
 
+/**
+ * 
+ * @param {number} userId Id dell'utente a cui associare le prenotazioni
+ * "anonime" (cioè create senza aver effettuato l'accesso).
+ */
+async function linkReservations(userId) {
+    const reservations = getReservations();
+    if (!reservations.length) {
+        return 0;
+    }
+    debugger
+    const reservationIds = reservations
+        .filter(reservation => !reservation.userId)
+        .map(reservation => reservation.id);
+    if (!reservationIds.length) {
+        return 0;
+    }
+    const response = await fetch('http://localhost:5000/link-reservations', {
+        method: 'POST',
+        body: JSON.stringify({
+            "reservationIds": reservationIds,
+            "userId": userId,
+        }),
+    })
+    .then(result => result.json());
+    debugger
+    if (response.result === 'OK') {
+    }
+    return response;
+}
+
 const ReservationsManager = {
     saveReservation: saveReservation,
     removeReservation: removeReservation,
     getReservations: getReservations,
     clearReservations: clearReservations,
+    linkReservations: linkReservations,
 };

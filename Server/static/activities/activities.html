@@ -12,6 +12,7 @@
     <script src="/static/components/sidenav.js"></script>
     <script src="/static/components/bottom-navigation-bar.js"></script>
     <link href="/static/styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body>
@@ -24,7 +25,7 @@
                     <h2 class="mb-3">Attività</h2>
                     <div class="input-group mb-3">
                         <input id="search-input" type="text" class="form-control" placeholder="Cerca..." aria-label="Cerca...">
-                        <span class="input-group-text">@</span>
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
                     </div>
                     <div class="d-flex flex-row flex-wrap mb-3 filters-container">
                         <div class="d-flex flex-row align-content-center filter-select-container">
@@ -50,21 +51,27 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="form-floating">
-                                        <select class="form-select mb-3" id="time-select" aria-label="Floating label select example">
-                                            <option value="1" selected>1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                        </select>
-                                        <label for="floatingSelect">Orario</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                                        <div class="form-floating">
+                                            <select class="form-select" id="time-select" aria-label="Floating label select example">
+                                                <option value="1" selected>1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                            </select>
+                                            <label for="floatingSelect">Orario</label>
+                                        </div>
                                     </div>
-                                    <div class="form-floating">
-                                        <select class="form-select mb-3" id="partecipants-select" aria-label="Floating label select example">
-                                            <option value="1" selected>1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                        </select>
-                                        <label for="floatingSelect">Posti</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text"><i class="bi bi-people"></i></span>
+                                        <div class="form-floating">
+                                            <select class="form-select" id="partecipants-select" aria-label="Floating label select example">
+                                                <option value="1" selected>1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                            </select>
+                                            <label for="floatingSelect">Posti</label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">

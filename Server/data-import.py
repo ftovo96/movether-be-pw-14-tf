@@ -69,9 +69,10 @@ def importFeedbacks():
                 id INTEGER PRIMARY KEY,
                 reservation_id INTEGER NOT NULL,
                 score INTEGER NOT NULL,
-                message CHAR(1000)
+                message CHAR(1000),
+                timestamp INTEGER NOT NULL
             ); """
-    insertDataQuery = "INSERT INTO FEEDBACK (reservation_id, score, message) VALUES (?,?,?)"
+    insertDataQuery = "INSERT INTO FEEDBACK (reservation_id, score, message, timestamp) VALUES (?,?,?,?)"
     importTableData("FEEDBACK", fileName, createTableQuery, insertDataQuery)
 
 def importRewards():

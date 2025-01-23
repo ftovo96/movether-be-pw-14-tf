@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, make_response, redirect, url_for
 import json
 import sqlite3
 import random
+import time
 
 app = Flask(__name__)
 
@@ -104,8 +105,11 @@ def activities_api():
             "max_partecipants": activity["max_partecipants"],
             "company_id": activity["company_id"],
             "company_name": activity["company_name"],
-            "allowAnonymous": activity["allow_anonymous"],
         }
+        if activity["allow_anonymous"] == "True":
+            act["allowAnonymous"] = "true"
+        elif activity["allow_anonymous"] == "False":
+            act["allowAnonymous"] = "false"
         # print(act)
         result.append(act)
     response = jsonify(result)
@@ -279,6 +283,40 @@ def reserveActivity():
     }
     connection.commit()
     connection.close()
+    response = jsonify(result)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+@app.route('/link-reservations', methods=['POST'])
+def link_reservations_api():
+    print("Reservations")
+    data = json.loads(request.data)
+    userId = data['userId']
+    reservationIds = data['reservationIds']
+    print(userId)
+    print(reservationIds)
+
+
+    connection = sqlite3.connect(databaseName)
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+    queryIds = ','.join(['?'] * len(reservationIds))
+    query = f""" 
+        UPDATE RESERVATION
+        SET user_id = {userId}
+        WHERE 
+            user_id IS NULL AND
+            id IN ({queryIds})
+     """
+    cursor.execute(query, reservationIds)
+    updatedRows = cursor.rowcount
+    connection.commit()
+    connection.close()
+    result = {
+        "result": "OK",
+        "linkedReservations": updatedRows,
+    }
+    # return result
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
@@ -595,7 +633,8 @@ def feedbacks_api(companyId):
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
     query = f""" SELECT *,
-        USER.name AS USER_NAME
+        USER.name AS USER_NAME,
+        USER.surname AS USER_SURNAME
         FROM FEEDBACK
         LEFT JOIN RESERVATION
         ON FEEDBACK.reservation_id = RESERVATION.id
@@ -620,11 +659,12 @@ def feedbacks_api(companyId):
             "id": feedback["id"],
             "score": feedback["score"],
             "message": feedback["message"],
+            "timestamp": feedback["timestamp"] * 1000,
             "companyId": feedback["activity_id"],
             "companyName": feedback["name"],
         }
         if (feedback["user_name"] is not None):
-            res["userName"] = feedback["user_name"]
+            res["userName"] = feedback["user_name"] + ' ' + feedback["user_surname"][0:1] + '.'
         else:
             res["userName"] = "Anonimo"
         print(res)
@@ -640,14 +680,15 @@ def set_feedback_api(reservationId):
     feedbackScore = data['score']
     feedbackMessage = data['message'] or None
     userId = data['userId'] or None
+    timestamp = int(time.time())
     connection = sqlite3.connect(databaseName)
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
     query = f"""
-        INSERT INTO FEEDBACK (reservation_id, score, message) 
-        VALUES (?,?,?)
+        INSERT INTO FEEDBACK (reservation_id, score, message, timestamp) 
+        VALUES (?,?,?,?)
     """
-    cursor.execute(query, (reservationId, feedbackScore, feedbackMessage))
+    cursor.execute(query, (reservationId, feedbackScore, feedbackMessage, timestamp))
     connection.commit()
     query = f""" SELECT *
         FROM FEEDBACK
@@ -661,6 +702,7 @@ def set_feedback_api(reservationId):
         "id": feedback["id"],
         "score": feedback["score"],
         "message": feedback["message"],
+        "timestamp": feedback["timestamp"] * 1000,
     }
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")

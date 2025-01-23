@@ -6,6 +6,7 @@ const company = {id: null, name: null};
 
 let modalRef = null;
 let modalReservationId = null;
+let modalActivityId = null;
 
 
 AppNavbar.initNavbar('navbar-container', 'handleLogin', 'logout');
@@ -60,19 +61,117 @@ async function loadActivities() {
         activitiesContainer.appendChild(noActivitiesElem);
     } else {
         activities.forEach(activity => {
-            const card = document.createElement('div');
-            card.className = 'p-3 border rounded activity-card';
-            const title = document.createElement('p');
-            title.className = 'activity-card_title';
-            title.innerHTML = `${activity.sport}`;
-            card.appendChild(title);
-            card.appendChild(createParagraph(`Data: ${activity.date}`));
-            card.appendChild(createParagraph(`Orari disponibili: ${activity.times.split('; ').join(' - ')}`));
-            card.appendChild(createParagraph(`Posti disponibili: ${activity.max_partecipants}`));
-            card.appendChild(createParagraph(`Località: ${activity.location}`));
+            const cardContent = `
+            <div>
+                <p class="activity-card_title">
+                    ${activity.sport} - <a href="/static/company/company.html?companyId=${activity.company_id}&companyName=${activity.company_name}&fromPage=0">${activity.company_name}</a>
+                </p>
+                <p><i class="bi bi-calendar-week"></i> Data: ${activity.date}</p>
+                <p><i class="bi bi-clock"></i> Orari disponibili: ${activity.times.split('; ').join(' - ')}</p>
+                <p><i class="bi bi-people"></i> Posti disponibili: ${activity.max_partecipants}</p>
+                <p><i class="bi bi-geo"></i> Località: ${activity.location}</p>
+            </div>
+            <div class="activity-cart_actions">
+                <button class="btn btn-primary" onclick="showReserveActivityModal('${activity.id}')">Prenota</button>
+            </div>
+        `;
+        const card = document.createElement('div');
+        card.classList = 'p-3 border rounded activity-card';
+        card.innerHTML = cardContent;
             activitiesContainer.appendChild(card);
         });
     }
+}
+
+async function showReserveActivityModal(activityId) {
+    var url = new URL(`http://localhost:5000/activities/${activityId}`);
+    if (user.id) {
+        url.searchParams.append('userId', user.id);
+    }
+    const activities = await fetch(url)
+        .then(result => result.json());
+    console.log('ReserveActivity ' + activityId);
+    const modal = document.getElementById('reservationModal');
+    document.getElementById('reservationModalTitle').innerText = `Prenota attività ${activityId}`;
+    // Imposto orari selezionabili
+    const timeSelect = document.getElementById('time-select');
+    timeSelect.disabled = false;
+    timeSelect.replaceChildren();
+    activities.forEach((activity, index) => {
+        const option = document.createElement('option');
+        option.value = activity.time;
+        option.innerText = activity.time;
+        if (index === 0) {
+            option.selected = true;
+        }
+        timeSelect.appendChild(option);
+
+    });
+    if (activities.length === 1) {
+        timeSelect.disabled = true;
+    }
+    // Imposto posti selezionabili
+    const partecipantsSelect = document.getElementById('partecipants-select');
+    partecipantsSelect.disabled = false;
+    partecipantsSelect.replaceChildren();
+    const availablePartecipants = activities[0].availablePartecipants;
+    for (var i = 1; i <= availablePartecipants; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.innerText = i;
+        if (i === 1) {
+            option.selected = true;
+        }
+        partecipantsSelect.appendChild(option);
+    }
+    if (availablePartecipants === 1) {
+        partecipantsSelect.disabled = true;
+    }
+    modalRef = new bootstrap.Modal(modal);
+    modalRef.show();
+    modalActivityId = activityId;
+}
+
+async function reserveActivity() {
+    var url = new URL(`http://localhost:5000/activities/${modalActivityId}`);
+    if (user.id) {
+        url.searchParams.append('userId', user.id);
+    }
+    const activities = await fetch(url)
+        .then(result => result.json());
+    const time = document.getElementById('time-select').value;
+    const partecipants = document.getElementById('partecipants-select').value;
+    const activity = activities.find(activity => activity.time === time);
+    console.log(`Reserve activity ${activity.id} at time ${time} for ${partecipants} people`);
+    const reservation = await fetch('http://localhost:5000/reserveActivity', {
+            method: 'POST',
+            body: JSON.stringify({
+                "activityId": activity.id,
+                "time": time,
+                "partecipants": partecipants,
+                "userId": user.id,
+                "reservationId": activity.reservationId,
+            }),
+        })
+        .then(result => result.json())
+        .catch(err => null);
+    if (reservation) {
+        if (!LoginManager.isLoggedIn()) {
+            ReservationsManager.saveReservation(reservation);
+            showReservationCodeModal(reservation);
+        }
+        modalRef.hide();
+        modalRef = null;
+        modalActivityId = null;
+        loadActivities();
+    }
+}
+
+function showReservationCodeModal(reservation) {
+    document.getElementById('reservation-number').innerText = reservation.id;
+    document.getElementById('reservation-security-code').innerText = reservation.securityCode;
+    const modal = document.getElementById('reservationCodeModal');
+    new bootstrap.Modal(modal).show();
 }
 
 async function loadData() {
@@ -98,16 +197,32 @@ async function loadFeedbacks() {
         feedbacksContainer.appendChild(noActivitiesElem);
     } else {
         feedbacks.forEach(feedback => {
+            const date = new Date(feedback.timestamp).toLocaleDateString();
+            // const card = document.createElement('div');
+            // card.className = 'p-3 border rounded activity-card';
+            // const filledStars = '<i class="bi bi-star-fill"></i>'.repeat(feedback.score);
+            // const emptyStars = '<i class="bi bi-star"></i>'.repeat(5 - feedback.score);
+            // card.appendChild(createParagraph(`Voto: ${filledStars}${emptyStars}`));
+            // if (feedback.message) {
+            //     const title = document.createElement('p');
+            //     title.className = 'activity-card_title';
+            //     title.innerHTML = `${feedback.message}`;
+            //     card.appendChild(title);
+            // }
+            // card.appendChild(createParagraph(`${feedback.userName} - ${date}`));
+            // feedbacksContainer.appendChild(card);
+            const filledStars = '<i class="bi bi-star-fill text-success"></i>'.repeat(feedback.score);
+            const emptyStars = '<i class="bi bi-star text-secondary"></i>'.repeat(5 - feedback.score);
+            let cardContent = `
+                <div>
+                    <div>${filledStars}${emptyStars}</div>
+                    <p class="activity-card_title">${feedback.message}</p>
+                    <p><i class="bi bi-person-circle"></i> ${feedback.userName} - ${date}</p>
+                </div>
+            `;
             const card = document.createElement('div');
-            card.className = 'p-3 border rounded activity-card';
-            card.appendChild(createParagraph(`Voto: ${'*'.repeat(feedback.score)}`));
-            if (feedback.message) {
-                const title = document.createElement('p');
-                title.className = 'activity-card_title';
-                title.innerHTML = `${feedback.message}`;
-                card.appendChild(title);
-            }
-            card.appendChild(createParagraph(`${feedback.userName}`));
+            card.classList = 'p-3 border rounded activity-card';
+            card.innerHTML = cardContent;
             feedbacksContainer.appendChild(card);
         });
     }
@@ -128,6 +243,4 @@ function logout() {
     user.id = null;
     user.fullName = null;
     AppNavbar.updateNavbar(user);
-    loadReservations();
-    updateInterface();
 }

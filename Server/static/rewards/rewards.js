@@ -63,6 +63,9 @@ async function loadRewards() {
             }
             const card = document.createElement('div');
             card.classList = 'p-3 border rounded activity-card';
+            if (!userPoints) {
+                card.classList.add('activity-card_disabled');
+            }
             card.innerHTML = cardContent;
             rewardsContainer.appendChild(card);
         });
@@ -93,7 +96,7 @@ async function loadRedeemedRewards() {
             let cardContent = `
                 <div>
                     <p class="activity-card_title">${reward.description}</p>
-                    <p>Codice: ${reward.code}</p>
+                    <p><i class="bi bi-upc-scan"></i> Codice: ${reward.code}</p>
                 </div>
             `;
             const card = document.createElement('div');
