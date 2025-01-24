@@ -1,20 +1,19 @@
 from flask import Flask, jsonify, request, redirect
 import json
-import queries
+from queries import login, activities, reservations, feedbacks, filters, rewards
 
 app = Flask(__name__)
 
 @app.route("/")
-def hello_world():
+def redirectToActivities():
     return redirect('static/activities/activities.html')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login_api():
-    print(request.data)
     data = json.loads(request.data)
     email = data['email']
     password = data['password']
-    user = queries.login(email, password)
+    user = login.login(email, password)
     if user is not None:
         result = {
             "user": user,
@@ -38,7 +37,7 @@ def activities_api():
         "companyId": request.args.get('companyId') or None,
         "userId": request.args.get('userId') or 0,
     }
-    result = queries.getActivities(params)
+    result = activities.getActivities(params)
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
@@ -46,7 +45,7 @@ def activities_api():
 @app.route('/activities/<activityId>')
 def activities_for_reservation_api(activityId):
     userId = request.args.get('userId') or 0
-    result = queries.getActivitiesForReservation(activityId, userId)
+    result = activities.getActivitiesForReservation(activityId, userId)
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
@@ -59,7 +58,7 @@ def reserve_activity_api():
         "partecipants": data['partecipants'],
         "userId": data['userId'] or None,
     }
-    result = queries.reserveActivity(params)
+    result = acitivities.reserveActivity(params)
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
@@ -69,14 +68,14 @@ def link_reservations_api():
     data = json.loads(request.data)
     userId = data['userId']
     reservationIds = data['reservationIds']
-    result = queries.linkReservations(userId, reservationIds)
+    result = reservations.linkReservations(userId, reservationIds)
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
 @app.route('/reservations/<reservationId>')
 def activities_for_reservation_edit_api(reservationId):
-    result = activitiesForReservationEdit(reservationId)
+    result = reservations.activitiesForReservationEdit(reservationId)
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
@@ -85,7 +84,7 @@ def activities_for_reservation_edit_api(reservationId):
 def delete_reservation_api(reservationId):
     wasDeleted = False
     if reservationId:
-        queries.deleteReservation(reservationId)
+        reservations.deleteReservation(reservationId)
         wasDeleted = True
     result = {
         "result": 'OK' if wasDeleted else 'KO',
@@ -103,7 +102,7 @@ def update_reservation_api(reservationId):
         "partecipants": data['partecipants'],
         "userId": data['userId'] or None,
     }
-    result = queries.updateReservation(params)
+    result = reservations.updateReservation(params)
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
@@ -120,74 +119,15 @@ def reservations_api():
             "sport": request.args.get('sport') or '',
             "location": request.args.get('location') or '',
         }
-        result = queries.getReservations(params)
+        result = reservations.getReservations(params)
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
-# @app.route("/reservations_history", methods=['GET'])
-# def reservations_history_api():
-#     user_id = request.args.get('userId') or None
-#     if (user_id is None):
-#         response = jsonify([])
-#         response.headers.add("Access-Control-Allow-Origin", "*")
-#         return response
-#     search = request.args.get('search') or ''
-#     sport = request.args.get('sport') or ''
-#     location = request.args.get('location') or ''
-#     connection = sqlite3.connect(databaseName)
-#     connection.row_factory = sqlite3.Row
-#     cursor = connection.cursor()
-#     query = f""" SELECT *,
-#         FEEDBACK.id as FEEDBACK_ID,
-#         COMPANY.id as COMPANY_ID,
-#         COMPANY.name as COMPANY_NAME
-#         FROM RESERVATION
-#         LEFT JOIN ACTIVITY AS ACT
-#         ON RESERVATION.activity_id = ACT.id
-#         LEFT JOIN COMPANY
-#         ON COMPANY.id = ACT.id
-#         LEFT JOIN FEEDBACK
-#         ON RESERVATION.id = FEEDBACK.reservation_id
-#         WHERE (
-#             user_id = '{user_id}' AND
-#             DATE(date) < DATE('now') AND
-#             ACT.SPORT LIKE '%{sport}%' AND
-#             ACT.LOCATION LIKE '%{location}%' AND
-#             COMPANY.name LIKE '%{search}%'
-#         )
-#     """
-#     cursor.execute(query)
-#     reservations = cursor.fetchall()
-#     connection.close()
-#     print(reservations)
-#     result = []
-#     for reservation in reservations:
-#         print(reservation)
-#         res = {
-#             "id": reservation["id"],
-#             "activity_id": reservation["activity_id"],
-#             "partecipants": reservation["partecipants"],
-#             "sport": reservation["sport"],
-#             "date": reservation["date"],
-#             "time": reservation["time"],
-#             "location": reservation["location"],
-#             "feedback_id": reservation["feedback_id"],
-#             "score": reservation["score"],
-#             "message": reservation["message"],
-#             "company_id": reservation["company_id"],
-#             "company_name": reservation["company_name"],
-#         }
-#         print(res)
-#         result.append(res)
-#     # return result
-#     response = jsonify(result)
-#     response.headers.add("Access-Control-Allow-Origin", "*")
-#     return response
 
 @app.route("/feedbacks/<companyId>", methods=['GET'])
 def feedbacks_api(companyId):
-    result = queries.getFeedbacks(companyId)
+    result = feedbacks.getFeedbacks(companyId)
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
@@ -201,28 +141,28 @@ def set_feedback_api(reservationId):
         "feedbackMessage": data['message'] or None,
         "userId": data['userId'] or None,
     }
-    result = queries.setFeedback(params)
+    result = feedbacks.setFeedback(params)
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
 @app.route("/sports", methods=['GET'])
 def sports_api():
-    result = queries.getSports()
+    result = filters.getSports()
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
 @app.route("/locations", methods=['GET'])
 def locations_api():
-    result = queries.getLocations()
+    result = filters.getLocations()
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
 @app.route("/rewards", methods=['GET'])
 def rewards_api():
-    result = queries.getRewards()
+    result = rewards.getRewards()
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
@@ -233,7 +173,7 @@ def redeemed_rewards_api():
     if (userId is None):
         result = []
     else:
-        result = queries.getRedeemedRewards(userId)
+        result = rewards.getRedeemedRewards(userId)
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
@@ -246,7 +186,7 @@ def user_points_api():
             "points": 0
         }
     else:
-        result = queries.getUserPoints(userId)
+        result = rewards.getUserPoints(userId)
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
@@ -259,7 +199,7 @@ def redeem_reward_api():
     if (userId is None or rewardId is None):
         result = None
     else:
-        result = queries.redeemReward(userId, rewardId)
+        result = rewards.redeemReward(userId, rewardId)
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
