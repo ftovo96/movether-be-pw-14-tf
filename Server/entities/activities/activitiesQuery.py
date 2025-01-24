@@ -1,6 +1,6 @@
 import sqlite3
 import random
-from queries import config
+from entities import config
 
 # Restituisce la lista delle attività
 def getActivities(params):

@@ -1,5 +1,5 @@
 import sqlite3
-from queries import config
+from entities import config
 
 # Collega le prenotazioni (eseguite con utente anonimo)
 # all'utente passato in input

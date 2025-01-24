@@ -1,5 +1,5 @@
 import sqlite3
-from queries import config
+from entities import config
 
 # Restituisce la lista degli sport delle attività
 def getSports():

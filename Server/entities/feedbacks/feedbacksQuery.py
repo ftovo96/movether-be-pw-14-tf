@@ -1,6 +1,6 @@
 import sqlite3
 import time
-from queries import config
+from entities import config
 
 # Restituisce gli ultimi 3 feedback di una palestra
 def getFeedbacks(companyId):

@@ -1,5 +1,5 @@
 import sqlite3
-from queries import config
+from entities import config
 
 # Verifica le credenziali dell'utente. Se sono giuste vengono
 # restituiti i dati dell'utente.
