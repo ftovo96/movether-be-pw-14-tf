@@ -1,15 +1,14 @@
 import json
 from flask import Blueprint, jsonify, request
 from . import feedbacksQuery
+import utilities
 
 feedbacks_api = Blueprint('feedbacks_api', __name__)
 
 @feedbacks_api.route("/feedbacks/<companyId>", methods=['GET'])
 def get_feedbacks_api(companyId):
     result = feedbacksQuery.getFeedbacks(companyId)
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)
 
 @feedbacks_api.route("/send-feedback/<reservationId>", methods=['POST'])
 def set_feedback_api(reservationId):
@@ -21,6 +20,4 @@ def set_feedback_api(reservationId):
         "userId": data['userId'] or None,
     }
     result = feedbacksQuery.setFeedback(params)
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)

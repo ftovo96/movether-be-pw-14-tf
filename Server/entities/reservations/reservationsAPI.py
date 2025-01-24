@@ -1,6 +1,7 @@
 import json
 from flask import Blueprint, jsonify, request
 from . import reservationsQuery
+import utilities
 
 reservations_api = Blueprint('reservations_api', __name__)
 
@@ -10,16 +11,12 @@ def link_reservations_api():
     userId = data['userId']
     reservationIds = data['reservationIds']
     result = reservationsQuery.linkReservations(userId, reservationIds)
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)
 
 @reservations_api.route('/reservations/<reservationId>')
 def activities_for_reservation_edit_api(reservationId):
     result = reservationsQuery.activitiesForReservationEdit(reservationId)
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)
 
 @reservations_api.route('/deleteReservation/<reservationId>', methods=['DELETE'])
 def delete_reservation_api(reservationId):
@@ -30,9 +27,7 @@ def delete_reservation_api(reservationId):
     result = {
         "result": 'OK' if wasDeleted else 'KO',
     }
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)
 
 @reservations_api.route('/updateReservation/<reservationId>', methods=['PUT'])
 def update_reservation_api(reservationId):
@@ -44,9 +39,7 @@ def update_reservation_api(reservationId):
         "userId": data['userId'] or None,
     }
     result = reservationsQuery.updateReservation(params)
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)
 
 @reservations_api.route("/reservations", methods=['GET'])
 def get_reservations_api():
@@ -61,6 +54,4 @@ def get_reservations_api():
             "location": request.args.get('location') or '',
         }
         result = reservationsQuery.getReservations(params)
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)

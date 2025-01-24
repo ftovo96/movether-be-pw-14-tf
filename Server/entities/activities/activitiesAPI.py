@@ -1,12 +1,9 @@
 import json
 from flask import Blueprint, jsonify, request
 from . import activitiesQuery
+import utilities
 
 activities_api = Blueprint('activities', __name__)
-
-# @account_api.route("/account")
-# def accountList():
-#     return "list of accounts"
 
 @activities_api.route("/activities", methods=['GET'])
 def get_activities_api():
@@ -18,17 +15,13 @@ def get_activities_api():
         "userId": request.args.get('userId') or 0,
     }
     result = activitiesQuery.getActivities(params)
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)
 
 @activities_api.route('/activities/<activityId>')
 def activities_for_reservation_api(activityId):
     userId = request.args.get('userId') or 0
     result = activitiesQuery.getActivitiesForReservation(activityId, userId)
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)
 
 @activities_api.route('/reserveActivity', methods=['POST'])
 def reserve_activity_api():
@@ -39,6 +32,4 @@ def reserve_activity_api():
         "userId": data['userId'] or None,
     }
     result = activitiesQuery.reserveActivity(params)
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)

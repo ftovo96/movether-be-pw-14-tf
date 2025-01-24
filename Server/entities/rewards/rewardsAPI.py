@@ -1,15 +1,14 @@
 import json
 from flask import Blueprint, jsonify, request
 from . import rewardsQuery
+import utilities
 
 rewards_api = Blueprint('rewards_api', __name__)
 
 @rewards_api.route("/rewards", methods=['GET'])
 def get_rewards_api():
     result = rewardsQuery.getRewards()
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)
 
 @rewards_api.route("/redeemed-rewards", methods=['GET'])
 def redeemed_rewards_api():
@@ -18,9 +17,7 @@ def redeemed_rewards_api():
         result = []
     else:
         result = rewardsQuery.getRedeemedRewards(userId)
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)
 
 @rewards_api.route("/user-points", methods=['GET'])
 def user_points_api():
@@ -31,9 +28,7 @@ def user_points_api():
         }
     else:
         result = rewardsQuery.getUserPoints(userId)
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)
 
 @rewards_api.route("/redeem-reward", methods=['POST'])
 def redeem_reward_api():
@@ -44,6 +39,4 @@ def redeem_reward_api():
         result = None
     else:
         result = rewardsQuery.redeemReward(userId, rewardId)
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)

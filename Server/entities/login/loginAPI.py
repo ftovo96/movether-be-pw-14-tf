@@ -1,6 +1,7 @@
 import json
 from flask import Blueprint, jsonify, request
 from . import loginQuery
+import utilities
 
 login_api = Blueprint('login_api', __name__)
 
@@ -20,6 +21,4 @@ def perform_login_api():
             "user": None,
             "result": "KO"
         }
-    response = jsonify(result)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return utilities.sendResponse(result)
