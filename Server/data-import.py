@@ -1,7 +1,6 @@
 import csv
 import sqlite3
-
-databaseName = "test-db.db"
+from entities import config
 
 def importUsers():
     fileName = "users"
@@ -96,7 +95,7 @@ def importRedeemedRewards():
     importTableData("REDEEMED_REWARD", fileName, createTableQuery, insertDataQuery)
 
 def importTableData(tableName, fileName, createTableQuery, insertDataQuery):
-    connection = sqlite3.connect(databaseName)
+    connection = sqlite3.connect(config.databaseName)
     cursor = connection.cursor()
     cursor.execute(f"DROP TABLE IF EXISTS {tableName}")
     cursor.execute(createTableQuery)
@@ -116,7 +115,7 @@ def importTableData(tableName, fileName, createTableQuery, insertDataQuery):
 
 def printTableData(tableName):
     print(f"{tableName}:")
-    connection = sqlite3.connect(databaseName)
+    connection = sqlite3.connect(config.databaseName)
     cursor = connection.cursor()
     userQuery = f""" SELECT * FROM {tableName}"""
     data = cursor.execute(userQuery)

@@ -1,1 +1,1 @@
-databaseName = "test-db.db"
+databaseName = "app-db.db"
