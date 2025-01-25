@@ -47,7 +47,7 @@ async function loadRewards() {
         rewards.forEach(reward => {
             let cardContent = `
                 <div>
-                    <p class="activity-card_title">${reward.description}</p>
+                    <p class="flexible-card_title">${reward.description}</p>
                 </div>
             `;
             if (user.id) {
@@ -62,9 +62,9 @@ async function loadRewards() {
                 }
             }
             const card = document.createElement('div');
-            card.classList = 'p-3 border rounded activity-card';
+            card.classList = 'p-3 border rounded flexible-card';
             if (!userPoints) {
-                card.classList.add('activity-card_disabled');
+                card.classList.add('flexible-card_disabled');
             }
             card.innerHTML = cardContent;
             rewardsContainer.appendChild(card);
@@ -95,12 +95,12 @@ async function loadRedeemedRewards() {
         rewards.forEach(reward => {
             let cardContent = `
                 <div>
-                    <p class="activity-card_title">${reward.description}</p>
+                    <p class="flexible-card_title">${reward.description}</p>
                     <p><i class="bi bi-upc-scan"></i> Codice: ${reward.code}</p>
                 </div>
             `;
             const card = document.createElement('div');
-            card.classList = 'p-3 border rounded activity-card';
+            card.classList = 'p-3 border rounded flexible-card';
             card.innerHTML = cardContent;
             redeemedRewardsContainer.appendChild(card.cloneNode(true));
         });

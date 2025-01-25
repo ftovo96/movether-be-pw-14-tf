@@ -155,9 +155,9 @@ async function fetchActivities() {
     } else {
         activities.forEach(activity => {
             // const card = document.createElement('div');
-            // card.className = 'p-3 border rounded activity-card';
+            // card.className = 'p-3 border rounded flexible-card';
             // const title = document.createElement('p');
-            // title.className = 'activity-card_title';
+            // title.className = 'flexible-card_title';
             // title.innerHTML = `${activity.sport} - <a href="/static/company/company.html?companyId=${activity.company_id}&companyName=${activity.company_name}&fromPage=0">${activity.company_name}</a>`;
             // card.appendChild(title);
             // card.appendChild(createParagraph(`Data: ${activity.date}`));
@@ -187,8 +187,8 @@ async function fetchActivities() {
             }
             let cardContent = `
                 <div>
-                    <div class="activity-card_badge">${badge}</div>
-                    <p class="activity-card_title">
+                    <div class="flexible-card_badge">${badge}</div>
+                    <p class="flexible-card_title">
                         ${activity.sport} - <a href="/static/company/company.html?companyId=${activity.company_id}&companyName=${activity.company_name}&fromPage=0">${activity.company_name}</a>
                     </p>
                     <p><i class="bi bi-calendar-week"></i> Data: ${new Date(activity.date).toLocaleDateString()}</p>
@@ -208,9 +208,9 @@ async function fetchActivities() {
                 `;
             }
             const card = document.createElement('div');
-            card.classList = 'p-3 border rounded activity-card';
+            card.classList = 'p-3 border rounded flexible-card';
             if (!isAvailable) {
-                card.classList.add('activity-card_disabled');
+                card.classList.add('flexible-card_disabled');
             }
             card.innerHTML = cardContent;
             activitiesContainer.appendChild(card);

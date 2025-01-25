@@ -1,16 +1,22 @@
 @media screen and (min-width: 992px) {
     .main-content {
         height: 100vh;
+        background: linear-gradient(135deg, #fff 0%, #fff 85%, #d1e7dd 85%, #d1e7dd 95%, #a01 95%, #a01 100%);
     }
 }
 @media screen and (max-width: 991px) {
     .main-content {
         height: calc(100vh - 56px);
+        background: linear-gradient(135deg, #cfe2ff 5%, #cfe2ff 12%, #fff3cd 12%, #fff3cd 20%, #fff 20%, #fff 85%, #d1e7dd 85%, #d1e7dd 95%, #a01 95%, #a01 100%);
     }
 }
 
 .page-content {
-    background-color: white;
+    overflow: auto;
+}
+
+.main-card-container {
+    background-color: #fff;
 }
 
 .query-message {
@@ -21,7 +27,7 @@
     margin-right: auto;
 }
 
-.activities-container {
+.cards-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -29,7 +35,7 @@
     column-gap: 1rem;
 }
 
-.activity-card {
+.flexible-card {
     flex-grow: 1;
     flex-shrink: 1;
     flex-basis: 0px;
@@ -40,16 +46,16 @@
     justify-content: space-between;
 }
 
-.activity-card_disabled {
+.flexible-card_disabled {
     opacity: 0.5;
     background-color: lightgray;
 }
 
-/* .activity-card_badge {
+/* .flexible-card_badge {
     text-align: right;
 } */
 
-.activity-card_title {
+.flexible-card_title {
     font-size: 20px;
     font-weight: bold;
 }
@@ -75,9 +81,6 @@
 }
 
 .user-avatar {
-    /* height: 32px;
-    width: 32px;
-    background-color: orange; */
     font-size: 24px;
     margin-right: 8px;
 }
@@ -133,6 +136,10 @@
     overflow: hidden;
 }
 
+/* Login */
+.login-page_background {
+    background: linear-gradient(135deg, #cfe2ff 5%, #cfe2ff 12%, #fff3cd 12%, #fff3cd 20%, #fff 20%, #fff 85%, #d1e7dd 85%, #d1e7dd 95%, #a01 95%, #a01 100%);
+}
 .login-icon-presentation {
     text-align: center;
     font-size: 64px;

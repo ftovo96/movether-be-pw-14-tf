@@ -18,10 +18,10 @@
 <body>
     <div class="d-flex flex-row main-content">
         <div id="sidenav-container"></div>
-        <div class="container-fluid bg-warning-subtle" style="overflow: auto;">
+        <div class="container-fluid page-content">
             <div id="navbar-container"></div>
             <div class="row p-3">
-                <div class="column border rounded p-3 page-content">
+                <div class="column border rounded p-3 main-card-container">
                     <h2 class="mb-3">Premi</h2>
                     <div id="anonymous-info" class="alert alert-info d-none" role="alert">
                         Per riscattare i premi devi <a href="/static/login/login.html" role="button" class="btn btn-link">effettuare il login</a>!
@@ -29,11 +29,11 @@
                     <div id="logged-in-info" class="alert alert-info d-none" role="alert">
                         Riscatta i premi che vuoi. Ogni premio costa 1 punto (hai n punti).
                     </div>
-                    <div class="column activities-container" id="rewards"></div>
+                    <div class="column cards-container" id="rewards"></div>
                     <div class="d-none" id="redeemed-rewards-block">
                         <div class="p-3"></div>
                         <h5 class="mb-3 mt-3">Premi riscattati</h5>
-                        <div class="column activities-container" id="redeemed-rewards"></div>
+                        <div class="column cards-container" id="redeemed-rewards"></div>
                     </div>
                     <!-- Reservation Code Modal -->
                     <div class="modal fade" id="redeemRewardModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

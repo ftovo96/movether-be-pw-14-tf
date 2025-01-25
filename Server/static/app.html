@@ -92,9 +92,9 @@
                             </select>
                         </div>
                     </div>
-                    <!-- <div class="activities-container">
-                        <div class="p-3 border rounded activity-card">
-                            <p class="activity-card_title">Corsa/Jogging - <a href="">Passione Corsa</a></p>
+                    <!-- <div class="cards-container">
+                        <div class="p-3 border rounded flexible-card">
+                            <p class="flexible-card_title">Corsa/Jogging - <a href="">Passione Corsa</a></p>
                             <p>Data: 11/11/2025</p>
                             <p>Orari disponibili: 10:00, 16:00, 18:00</p>
                             <p>Posti disponibili: 10</p>
@@ -115,7 +115,7 @@
                             <p>Località: Sabaudia</p>
                         </div>
                     </div> -->
-                    <div class="column activities-container" id="activities"></div>
+                    <div class="column cards-container" id="activities"></div>
                 </div>
             </div>
         </div>
@@ -230,9 +230,9 @@
             } else {
                 activities.forEach(activity => {
                     const card = document.createElement('div');
-                    card.className = 'p-3 border rounded activity-card';
+                    card.className = 'p-3 border rounded flexible-card';
                     const title = document.createElement('p');
-                    title.className = 'activity-card_title';
+                    title.className = 'flexible-card_title';
                     title.innerHTML = `${activity.sport} - <a href="company/company.html?companyId=${activity.company_id}&companyName=${activity.company_name}">${activity.company_name}</a>`;
                     card.appendChild(title);
                     card.appendChild(createParagraph(`Data: ${activity.date}`));

@@ -170,8 +170,8 @@ async function fetchReservations() {
             }
             let cardContent = `
                 <div>
-                    <div class="activity-card_badge">${badge}</div>
-                    <p class="activity-card_title">
+                    <div class="flexible-card_badge">${badge}</div>
+                    <p class="flexible-card_title">
                         ${reservation.sport} - <a href="/static/company/company.html?companyId=${reservation.company_id}&companyName=${reservation.company_name}&fromPage=1">${reservation.company_name}</a>
                     </p>
                     <p><i class="bi bi-calendar-week"></i> Data: ${new Date(reservation.date).toLocaleDateString()} alle ${reservation.time}</p>
@@ -191,9 +191,9 @@ async function fetchReservations() {
                 </div>`
             }
             const card = document.createElement('div');
-            card.classList = 'p-3 border rounded activity-card';
+            card.classList = 'p-3 border rounded flexible-card';
             if (isDisabled) {
-                card.classList.add('activity-card_disabled');
+                card.classList.add('flexible-card_disabled');
             }
             card.innerHTML = cardContent;
             reservationsContainer.appendChild(card);

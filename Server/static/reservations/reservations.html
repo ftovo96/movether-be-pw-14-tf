@@ -19,10 +19,10 @@
 <body>
     <div class="d-flex flex-row main-content">
         <div id="sidenav-container"></div>
-        <div class="container-fluid bg-warning-subtle" style="overflow: auto;">
+        <div class="container-fluid page-content">
             <div id="navbar-container"></div>
             <div class="row p-3">
-                <div class="column border rounded p-3 page-content">
+                <div class="column border rounded p-3 main-card-container">
                     <h2 class="mb-3">Prenotazioni</h2>
                     <div id="filters">
                         <div class="input-group mb-3">
@@ -50,7 +50,7 @@
                     <div id="logged-in-info" class="alert alert-info d-none" role="alert">
                         Hai effettuato prenotazioni senza essere loggato? <button type="button" class="btn btn-link" onclick="showManageAnonymousReservationModal()">Aggiungile tramite codice</button>!
                     </div>
-                    <div class="column activities-container" id="reservations"></div>
+                    <div class="column cards-container" id="reservations"></div>
                     <!-- Delete Modal -->
                     <div class="modal fade" id="reservationDeleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                         <div class="modal-dialog">

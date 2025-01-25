@@ -1,4 +1,9 @@
 "use strict"
+
+function goBack() {
+    window.history.back();
+}
+
 function handleSubmit(event) {
     event.preventDefault();
     const email = document.getElementById('user-email').value;
