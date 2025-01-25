@@ -1,5 +1,5 @@
 from flask import Flask, redirect
-from entities.login.loginAPI import login_api
+from entities.account.accountAPI import account_api
 from entities.activities.activitiesAPI import activities_api
 from entities.filters.filtersAPI import filters_api
 from entities.feedbacks.feedbacksAPI import feedbacks_api
@@ -8,7 +8,7 @@ from entities.rewards.rewardsAPI import rewards_api
 
 app = Flask(__name__)
 
-app.register_blueprint(login_api)
+app.register_blueprint(account_api)
 app.register_blueprint(activities_api)
 app.register_blueprint(filters_api)
 app.register_blueprint(feedbacks_api)

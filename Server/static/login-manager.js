@@ -1,4 +1,5 @@
 "use strict"
+
 const LoginManager = {
     isLoggedIn: () => {
         return localStorage.getItem('userId') !== null;
@@ -43,5 +44,18 @@ const LoginManager = {
         localStorage.removeItem('userIdentifier');
         ReservationsManager.clearReservations();
     },
+    register: async (userInfo) => {
+        const response = await fetch('http://localhost:5000/register', {
+            method: 'POST',
+            body: JSON.stringify({
+                "name": userInfo.name,
+                "surname": userInfo.surname,
+                "email": userInfo.email,
+                "password": userInfo.password,
+            }),
+        })
+        .then(result => result.json());
+        return response;
+    }
 };
 LoginManager.getUserIdentifier();

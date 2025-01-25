@@ -9,8 +9,7 @@
     <script src="/static/reservations-manager.js"></script>
     <script src="/static/login-manager.js"></script>
     <link href="/static/styles.css" rel="stylesheet">
-    <script src="/static/login/login.js"></script>
-    <link href="/static/login/login.css" rel="stylesheet">
+    <link href="/static/register/register.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
@@ -21,12 +20,23 @@
             <div class="login-icon-presentation">
               <i class="bi bi-person-circle text-success"></i>
             </div>
-            <h2>Effettua l'accesso</h2>
+            <h2>Registra il tuo account</h2>
             <div class="p-2"></div>
-            <div id="login-error" class="alert alert-danger d-none" role="alert">
-                Email o password errati!
-              </div>              
             <form id="login-form" class="needs-validation" novalidate>
+              <div class="mb-3">
+                <label for="user-name" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="user-name" placeholder="Inserisci il tuo nome" required>
+                <div class="invalid-feedback">
+                  Campo obbligatorio
+                </div>              
+              </div>
+              <div class="mb-3">
+                <label for="user-surname" class="form-label">Cognome</label>
+                <input type="text" class="form-control" id="user-surname" placeholder="Inserisci il tuo cognome" required>
+                <div class="invalid-feedback">
+                  Campo obbligatorio
+                </div>              
+              </div>
                 <div class="mb-3">
                   <label for="user-email" class="form-label">Indirizzo email</label>
                   <input type="email" class="form-control" id="user-email" placeholder="Inserisci la tua email" required>
@@ -36,18 +46,17 @@
                 </div>
                 <div class="mb-3">
                   <label for="user-password" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="user-password" placeholder="Inserisci la tua password" required>
+                  <input type="password" class="form-control" id="user-password" placeholder="Inserisci la tua password" minlength="8" required>
                   <div class="invalid-feedback">
-                    Campo obbligatorio
+                    Lunghezza minima: 8 caratteri
                   </div>              
                 </div>
                 <div class="p-2"></div>
-                <button onclick="handleSubmit(event)" class="btn btn-primary">Accedi</button>
+                <button onclick="handleSubmit(event)" class="btn btn-primary">Registrati</button>
               </form>
-              <div class="p-4"></div>
-              <p>Non hai ancora un account? <a href="/static/register/register.html" role="button" class="btn btn-link">Registrati</a></p>
         </div>
     </div>
+    <script src="/static/register/register.js"></script>
 </body>
 
 </html>
