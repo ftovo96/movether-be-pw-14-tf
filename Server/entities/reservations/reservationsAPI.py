@@ -18,7 +18,7 @@ def activities_for_reservation_edit_api(reservationId):
     result = reservationsQuery.activitiesForReservationEdit(reservationId)
     return utilities.sendResponse(result)
 
-@reservations_api.route('/deleteReservation/<reservationId>', methods=['DELETE'])
+@reservations_api.route('/reservations/<reservationId>', methods=['DELETE'])
 def delete_reservation_api(reservationId):
     wasDeleted = False
     if reservationId:
@@ -29,7 +29,7 @@ def delete_reservation_api(reservationId):
     }
     return utilities.sendResponse(result)
 
-@reservations_api.route('/updateReservation/<reservationId>', methods=['PUT'])
+@reservations_api.route('/reservations/<reservationId>', methods=['PUT'])
 def update_reservation_api(reservationId):
     data = json.loads(request.data)
     params = {

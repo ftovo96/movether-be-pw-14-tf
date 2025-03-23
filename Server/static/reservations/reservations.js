@@ -209,7 +209,7 @@ function showDeleteReservationModal(reservationId) {
 }
 
 async function deleteReservation() {
-    var url = new URL(`http://localhost:5000/deleteReservation/${modalReservationId}`);
+    var url = new URL(`http://localhost:5000/reservations/${modalReservationId}`);
     await fetch(url, { method: 'DELETE', })
         .then(result => {
             if (result.status === 200) {
@@ -281,7 +281,7 @@ async function editReservation() {
     const partecipants = document.getElementById('partecipants-select').value;
     const activity = activities.find(activity => activity.time === time);
     console.log(`Reserve activity ${activity.id} at time ${time} for ${partecipants} people`);
-    await fetch(`http://localhost:5000/updateReservation/${modalReservationId}`, {
+    await fetch(`http://localhost:5000/reservations/${modalReservationId}`, {
         method: 'PUT',
         body: JSON.stringify({
             "activityId": activity.id,
