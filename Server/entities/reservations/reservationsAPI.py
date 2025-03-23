@@ -13,7 +13,7 @@ def link_reservations_api():
     result = reservationsQuery.linkReservations(userId, reservationIds)
     return utilities.sendResponse(result)
 
-@reservations_api.route('/reservations/<reservationId>')
+@reservations_api.route('/reservation-options/<reservationId>')
 def activities_for_reservation_edit_api(reservationId):
     result = reservationsQuery.activitiesForReservationEdit(reservationId)
     return utilities.sendResponse(result)
@@ -54,4 +54,23 @@ def get_reservations_api():
             "location": request.args.get('location') or '',
         }
         result = reservationsQuery.getReservations(params)
+    return utilities.sendResponse(result)
+
+@reservations_api.route('/reservations/<reservationId>', methods=['GET'])
+def get_reservation_api(reservationId):
+    params = {
+        "reservationId": reservationId,
+    }
+    result = reservationsQuery.getReservation(params)
+    return utilities.sendResponse(result)
+
+@reservations_api.route("/get-reservation-by-code", methods=['GET'])
+def get_reservation_by_code_api():
+    reservationId = request.args.get('id') or None
+    securityCode = request.args.get('securityCode') or None
+    params = {
+        "reservationId": reservationId,
+        "securityCode": securityCode,
+    }
+    result = reservationsQuery.getReservationByCode(params)
     return utilities.sendResponse(result)

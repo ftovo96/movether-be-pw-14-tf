@@ -222,7 +222,7 @@ async function deleteReservation() {
 }
 
 async function showEditReservationModal(reservationId) {
-    var url = new URL(`http://localhost:5000/reservations/${reservationId}`);
+    var url = new URL(`http://localhost:5000/reservation-options/${reservationId}`);
     // if (user.id) {
     //     url.searchParams.append('userId', user.id);
     // }

@@ -68,7 +68,6 @@ async function linkReservations(userId) {
     if (!reservations.length) {
         return 0;
     }
-    debugger
     const reservationIds = reservations
         .filter(reservation => !reservation.userId)
         .map(reservation => reservation.id);
@@ -83,7 +82,6 @@ async function linkReservations(userId) {
         }),
     })
     .then(result => result.json());
-    debugger
     if (response.result === 'OK') {
     }
     return response;
