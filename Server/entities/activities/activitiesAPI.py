@@ -30,6 +30,7 @@ def reserve_activity_api():
         "activityId": data['activityId'],
         "partecipants": data['partecipants'],
         "userId": data['userId'] or None,
+        "reservationId": data['reservationId'] or None,
     }
     result = activitiesQuery.reserveActivity(params)
     return utilities.sendResponse(result)

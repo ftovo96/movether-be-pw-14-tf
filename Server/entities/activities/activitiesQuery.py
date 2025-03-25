@@ -101,7 +101,10 @@ def getActivitiesForReservation(activityId, userId):
         WHERE date = (
             SELECT DATE
             FROM ACTIVITY
-            WHERE ID = {activityId}
+            WHERE (
+                ID = {activityId} AND
+                COMPANY_ID = ACT.COMPANY_ID
+            )
         )
     """
     cursor.execute(query)
@@ -123,11 +126,19 @@ def reserveActivity(params):
     connection = sqlite3.connect(config.databaseName)
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
-    # Elimino eventuale vecchia prenotazione
-    if params["activityId"]:
+    if params["activityId"] and params["userId"]:
         query = f"""
             DELETE FROM RESERVATION
-            WHERE ACTIVITY_ID = {params["activityId"]}
+            WHERE (
+                ACTIVITY_ID = {params["activityId"]} AND
+                USER_ID = {params["userId"]}
+            )
+        """
+        cursor.execute(query)
+    elif params["reservationId"]:
+        query = f"""
+            DELETE FROM RESERVATION
+            WHERE id = {params["reservationId"]}
         """
         cursor.execute(query)
     # Creo prenotazione
@@ -139,11 +150,6 @@ def reserveActivity(params):
     cursor.execute(query, (params["activityId"], params["userId"], securityCode, params["partecipants"]))
     # Ottengo i dati della prenotazione appena creata
     query = f""" SELECT *,
-        (
-            SELECT sport
-            FROM ACTIVITY
-            WHERE ACTIVITY.id = RES.activity_id
-        ) as sport_abc,
         (
             SELECT SUM(RESERVATION.partecipants)
             FROM RESERVATION
@@ -173,7 +179,6 @@ def reserveActivity(params):
         "requested_partecipants": reservation["requested_partecipants"],
         "available_partecipants": reservation["max_partecipants"] - reservation["requested_partecipants"] + reservation["partecipants"],
         "sport": reservation["sport"],
-        "sport_abc": reservation["sport_abc"],
         "date": reservation["date"],
         "time": reservation["time"],
         "location": reservation["location"],
