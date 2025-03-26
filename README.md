@@ -33,3 +33,9 @@ Nella cartella Server/ sono presenti i file del backend, nello specifico:
 * La cartella data/ contenente i file csv utilizzati dallo script data-import.py per inizializzare il database. Modificando i vari file e rieseguendo lo script è possibile modificare i dati del database.
 * La cartella entities/ contenente le api responsabili delle varie entità del progetto e le query per la manipolazione dei dati
 * La cartella static/ contentente le risorse web che costituiscono la vecchia versione del frontend del progetto.
+
+Nella cartella Documentazione/ sono presenti i vari documenti contenenti le specifiche del progetto:
+* Casi d'uso
+* Diagramma casi d'uso
+* Diagramma ER
+* Documentazione API
