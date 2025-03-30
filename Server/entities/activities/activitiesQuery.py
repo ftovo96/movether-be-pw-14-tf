@@ -15,7 +15,11 @@ def getActivities(params):
         (
             SELECT GROUP_CONCAT(time, '; ') 
             FROM ACTIVITY
-            WHERE ACT.date = ACTIVITY.date
+            WHERE (
+                ACT.date = ACTIVITY.date AND
+                ACT.sport = ACTIVITY.sport AND
+                ACT.company_id = ACTIVITY.company_id
+            )
         ) as ACT_TIMES,
         ACT.max_partecipants,
         ACT.allow_anonymous,
@@ -46,7 +50,7 @@ def getActivities(params):
         query += f"""AND COMPANY.id = {params["companyId"]}"""
     query += f"""
         )
-        GROUP BY ACT.date
+        GROUP BY ACT.date, ACT.sport, ACT.company_id
         ORDER BY 
             date(ACT.date) DESC,
             ACT.time DESC
