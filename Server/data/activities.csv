@@ -1,8 +1,76 @@
 "id","sport","date","time","maxPartecipants","description","location","companyId","allowAnonymous"
-1,RUNNING,2025-01-11,10:30,10,Vieni a correre con noi!,Bosco Parco Nazionale del Circeo (Sabaudia),2,True
-2,RUNNING,2025-01-11,15:30,10,Vieni a correre con noi!,Bosco Parco Nazionale del Circeo (Sabaudia),2,True
-3,RUNNING,2025-01-11,17:30,10,Vieni a correre con noi!,Bosco Parco Nazionale del Circeo (Sabaudia),2,True
-4,TENNIS,2025-01-15,16:00,4,Partecipa ad una partita per familiarizzare con questo sport,Giardini Latina,3,False
-5,BODYBUILDING,2025-01-18,10:00,8,Vieni a sollevare in compagnia!,Sede palestra,1,True
-6,BODYBUILDING,2025-01-18,16:00,12,Vieni a sollevare in compagnia!,Sede palestra,1,True
-7,BODYBUILDING,2025-01-23,16:00,12,Vieni a sollevare in compagnia!,Terracina,1,True
+1,Yoga Flex,2025-03-07,19:00,8,Per chi vuole migliorare il suo benessere fisico insieme alla sua capacità di concentrazione e rilassamento mentale,Belvedere (Sabaudia),1,True
+2,Yoga Flex,2025-03-21,19:00,8,Per chi vuole migliorare il suo benessere fisico insieme alla sua capacità di concentrazione e rilassamento mentale,Belvedere (Sabaudia),1,True
+3,Step innovation,2025-03-15,18:00,15,Per chi ama un allenamento dinamico e coreografico,Sede Palestra (Pontinia),5,True
+4,Fitboxing,2025-02-15,09:30,10,Attività per che unisce la prestazione fisica all'apprendere una tecnica di autodifesa adatta a tutti,Piazza municipio (Terracina),7,False
+5,Fitboxing,2025-02-22,09:30,10,Attività per che unisce la prestazione fisica all'apprendere una tecnica di autodifesa adatta a tutti,Piazza municipio (Terracina),7,False
+6,Fitboxing,2025-03-15,09:30,10,Attività per che unisce la prestazione fisica all'apprendere una tecnica di autodifesa adatta a tutti,Piazza municipio (Terracina),7,False
+7,Zumba kids,2025-03-09,15:00,20,Allenamento divertente a tempo di musica,Zona portuale (Terracina),6,False
+8,Zumba kids,2025-03-23,15:00,20,Allenamento divertente a tempo di musica,Zona portuale (Terracina),6,False
+9,Acqua combat,2025-03-14,15:00,12,Ginnastica in acqua a tempo di musica con movimenti provenienti dalle arti marziali e dal pugilato,Sede palestra (Pontinia),4,True
+10,Fit Pilates,2025-03-15,15:00,6,"Adatto per rimodellare il corpo e migliorare flessibilità, controllo ed equilibrio",Sede palestra (Terracina),6,False
+11,Acqua bike,2025-03-15,15:00,12,Cyclette in acqua a tempo di musica,Sede palestra (Pontinia),4,True
+12,Spinning,2025-03-08,15:00,30,Per chi vuole un allenamento intenso e ama pedalare,Sede palestra (Pontinia),4,True
+13,Nordic walking,2025-02-28,15:00,14,Per chi preferisce l'allenamento outdoor unito al piacere della camminata con bastoncini,Mura ciclopiche (San Felice Circeo),8,True
+14,Nordic walking,2025-03-14,15:00,14,Per chi preferisce l'allenamento outdoor unito al piacere della camminata con bastoncini,Mura ciclopiche (San Felice Circeo),8,True
+15,Acqua jump,2025-02-23,15:00,6,Fitness in acqua con trampolini sommersi per migliorare l'equilibrio ed il coordinamento corporeo,Sede palestra (Pontinia),4,True
+16,Hydro-abdominal,2025-03-29,15:00,15,Allenamento tonificante in acqua specifico per addominali,Sede palestra (Pontinia),4,True
+17,Power-pull,2025-02-14,15:00,10,Per allenarsi divertendosi in acqua con l'uso di vari attrezzi,Sede palestra (Pontinia),4,True
+18,Power-pull,2025-02-21,15:00,10,Per allenarsi divertendosi in acqua con l'uso di vari attrezzi,Sede palestra (Pontinia),4,True
+19,Power-pull,2025-03-07,15:00,10,Per allenarsi divertendosi in acqua con l'uso di vari attrezzi,Sede palestra (Pontinia),4,True
+20,Indoboard kids,2025-02-22,15:00,5,Divertenti esercizi di equilibrio per i vostri bambini simulando il movimento di una tavola da surf,Sede palestra (Pontinia),4,True
+21,Indoboard kids,2025-03-01,15:00,5,Divertenti esercizi di equilibrio per i vostri bambini simulando il movimento di una tavola da surf,Sede palestra (Pontinia),4,True
+22,Indoboard kids,2025-03-08,15:00,5,Divertenti esercizi di equilibrio per i vostri bambini simulando il movimento di una tavola da surf,Sede palestra (Pontinia),4,True
+23,Indoboard kids,2025-03-15,15:00,5,Divertenti esercizi di equilibrio per i vostri bambini simulando il movimento di una tavola da surf,Sede palestra (Pontinia),4,True
+24,Indoboard kids,2025-03-22,15:00,5,Divertenti esercizi di equilibrio per i vostri bambini simulando il movimento di una tavola da surf,Sede palestra (Pontinia),4,True
+25,Arrampicata indoor,2025-03-09,15:00,4,Arrampicata per favorire la concentrazione e il potenziamento muscolare,Sede palestra (Sabaudia),2,True
+26,Arrampicata indoor,2025-03-23,15:00,4,Arrampicata per favorire la concentrazione e il potenziamento muscolare,Sede palestra (Sabaudia),2,True
+27,Trekking,2025-03-16,15:00,18,Escursione sportiva alla scoperta del territorio,Parco Nazionale del Circeo (Sabaudia),3,False
+28,Yoga Flex,2025-04-11,19:00,8,Per chi vuole migliorare il suo benessere fisico insieme alla sua capacità di concentrazione e rilassamento mentale,Belvedere (Sabaudia),1,True
+29,Yoga Flex,2025-04-25,19:00,8,Per chi vuole migliorare il suo benessere fisico insieme alla sua capacità di concentrazione e rilassamento mentale,Belvedere (Sabaudia),1,True
+30,Yoga Flex,2025-04-09,19:00,8,Per chi vuole migliorare il suo benessere fisico insieme alla sua capacità di concentrazione e rilassamento mentale,Belvedere (Sabaudia),1,True
+31,Yoga Flex,2025-04-23,19:00,8,Per chi vuole migliorare il suo benessere fisico insieme alla sua capacità di concentrazione e rilassamento mentale,Belvedere (Sabaudia),1,True
+32,Step innovation,2025-04-12,16:00,15,Per chi ama un allenamento dinamico e coreografico,Sede Palestra (Pontinia),5,True
+33,Step innovation,2025-04-12,18:00,15,Per chi ama un allenamento dinamico e coreografico,Sede Palestra (Pontinia),5,True
+34,Step innovation,2025-05-03,16:00,15,Per chi ama un allenamento dinamico e coreografico,Sede Palestra (Pontinia),5,True
+35,Step innovation,2025-05-03,18:00,15,Per chi ama un allenamento dinamico e coreografico,Sede Palestra (Pontinia),5,True
+36,Fitboxing,2025-05-03,09:30,10,Attività per che unisce la prestazione fisica all'apprendere una tecnica di autodifesa adatta a tutti,Piazza municipio (Terracina),7,False
+37,Fitboxing,2025-05-10,09:30,10,Attività per che unisce la prestazione fisica all'apprendere una tecnica di autodifesa adatta a tutti,Piazza municipio (Terracina),7,False
+38,Fitboxing,2025-04-17,09:30,10,Attività per che unisce la prestazione fisica all'apprendere una tecnica di autodifesa adatta a tutti,Piazza municipio (Terracina),7,False
+39,Fitboxing,2025-04-24,09:30,10,Attività per che unisce la prestazione fisica all'apprendere una tecnica di autodifesa adatta a tutti,Piazza municipio (Terracina),7,False
+40,Zumba kids,2025-04-27,15:00,20,Allenamento divertente a tempo di musica,Zona portuale (Terracina),6,False
+41,Zumba kids,2025-04-27,17:00,15,Allenamento divertente a tempo di musica,Zona portuale (Terracina),6,False
+42,Zumba kids,2025-05-18,15:00,20,Allenamento divertente a tempo di musica,Zona portuale (Terracina),6,False
+43,Zumba kids,2025-05-18,17:00,15,Allenamento divertente a tempo di musica,Zona portuale (Terracina),6,False
+44,Acqua combat,2025-04-11,15:00,12,Ginnastica in acqua a tempo di musica con movimenti provenienti dalle arti marziali e dal pugilato,Sede palestra (Pontinia),4,True
+45,Acqua combat,2025-05-02,15:00,12,Ginnastica in acqua a tempo di musica con movimenti provenienti dalle arti marziali e dal pugilato,Sede palestra (Pontinia),4,True
+46,Fit Pilates,2025-04-12,15:00,6,"Adatto per rimodellare il corpo e migliorare flessibilità, controllo ed equilibrio",Sede palestra (Terracina),6,False
+47,Fit Pilates,2025-04-19,15:00,6,"Adatto per rimodellare il corpo e migliorare flessibilità, controllo ed equilibrio",Sede palestra (Terracina),6,False
+48,Fit Pilates,2025-04-26,15:00,6,"Adatto per rimodellare il corpo e migliorare flessibilità, controllo ed equilibrio",Sede palestra (Terracina),6,False
+49,Fit Pilates,2025-05-03,15:00,6,"Adatto per rimodellare il corpo e migliorare flessibilità, controllo ed equilibrio",Sede palestra (Terracina),6,False
+50,Acqua bike,2025-04-26,15:00,12,Cyclette in acqua a tempo di musica,Sede palestra (Pontinia),4,True
+51,Acqua bike,2025-05-17,15:00,12,Cyclette in acqua a tempo di musica,Sede palestra (Pontinia),4,True
+52,Spinning,2025-04-12,15:00,30,Per chi vuole un allenamento intenso e ama pedalare,Sede palestra (Pontinia),4,True
+53,Spinning,2025-04-19,15:00,30,Per chi vuole un allenamento intenso e ama pedalare,Sede palestra (Pontinia),4,True
+54,Nordic walking,2025-04-11,15:00,14,Per chi preferisce l'allenamento outdoor unito al piacere della camminata con bastoncini,Mura ciclopiche (San Felice Circeo),8,True
+55,Nordic walking,2025-05-03,15:00,14,Per chi preferisce l'allenamento outdoor unito al piacere della camminata con bastoncini,Mura ciclopiche (San Felice Circeo),8,True
+56,Nordic walking,2025-05-18,15:00,14,Per chi preferisce l'allenamento outdoor unito al piacere della camminata con bastoncini,Mura ciclopiche (San Felice Circeo),8,True
+57,Nordic walking,2025-05-24,15:30,14,Per chi preferisce l'allenamento outdoor unito al piacere della camminata con bastoncini,Mura ciclopiche (San Felice Circeo),8,True
+58,Acqua jump,2025-04-27,15:00,6,Fitness in acqua con trampolini sommersi per migliorare l'equilibrio ed il coordinamento corporeo,Sede palestra (Pontinia),4,True
+59,Acqua jump,2025-04-27,18:00,6,Fitness in acqua con trampolini sommersi per migliorare l'equilibrio ed il coordinamento corporeo,Sede palestra (Pontinia),4,True
+60,Acqua jump,2025-05-25,15:00,6,Fitness in acqua con trampolini sommersi per migliorare l'equilibrio ed il coordinamento corporeo,Sede palestra (Pontinia),4,True
+61,Acqua jump,2025-05-25,18:00,6,Fitness in acqua con trampolini sommersi per migliorare l'equilibrio ed il coordinamento corporeo,Sede palestra (Pontinia),4,True
+62,Hydro-abdominal,2025-04-26,15:00,15,Allenamento tonificante in acqua specifico per addominali,Sede palestra (Pontinia),4,True
+63,Hydro-abdominal,2025-05-24,15:00,15,Allenamento tonificante in acqua specifico per addominali,Sede palestra (Pontinia),4,True
+64,Power-pull,2025-04-11,15:00,10,Per allenarsi divertendosi in acqua con l'uso di vari attrezzi,Sede palestra (Pontinia),4,True
+65,Power-pull,2025-05-16,15:00,10,Per allenarsi divertendosi in acqua con l'uso di vari attrezzi,Sede palestra (Pontinia),4,True
+66,Pound Fit,2025-04-12,15:00,12,Allenamento suonando la batteria con le ripstix!,Sede palestra (Pontinia),4,True
+67,Pound Fit,2025-04-26,15:00,12,Allenamento suonando la batteria con le ripstix!,Sede palestra (Pontinia),4,True
+68,Indoboard kids,2025-04-26,15:00,5,Divertenti esercizi di equilibrio per i vostri bambini simulando il movimento di una tavola da surf,Sede palestra (Pontinia),4,True
+69,Indoboard kids,2025-05-24,15:00,5,Divertenti esercizi di equilibrio per i vostri bambini simulando il movimento di una tavola da surf,Sede palestra (Pontinia),4,True
+70,Arrampicata indoor,2025-04-27,15:00,4,Arrampicata per favorire la concentrazione e il potenziamento muscolare,Sede palestra (Sabaudia),2,True
+71,Arrampicata indoor,2025-04-27,16:00,4,Arrampicata per favorire la concentrazione e il potenziamento muscolare,Sede palestra (Sabaudia),2,True
+72,Arrampicata indoor,2025-04-27,17:00,4,Arrampicata per favorire la concentrazione e il potenziamento muscolare,Sede palestra (Sabaudia),2,True
+73,Trekking,2025-04-13,15:00,18,Escursione sportiva alla scoperta del territorio,Parco Nazionale del Circeo (Sabaudia),3,False
+74,Trekking,2025-05-11,15:00,18,Escursione sportiva alla scoperta del territorio,Parco Nazionale del Circeo (Sabaudia),3,False
+75,Trekking,2025-06-15,15:00,18,Escursione sportiva alla scoperta del territorio,Parco Nazionale del Circeo (Sabaudia),3,False
