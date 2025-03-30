@@ -6,7 +6,7 @@ Maggiori informazioni sono disponibili sul sito di [Flask](https://flask.pallets
 
 ## Avvio del progetto
 
-Dopo aver effettuato il clone del progetto è necessario entrare nella sua cartella e dare i seguenti comandi:
+Dopo aver effettuato il clone del progetto è necessario entrare nella cartella Server/ e dare i seguenti comandi:
 
 ```bash
 # MacOS/Linux
@@ -39,3 +39,4 @@ Nella cartella Documentazione/ sono presenti i vari documenti contenenti le spec
 * Diagramma casi d'uso
 * Diagramma ER
 * Documentazione API
+* Mockup dell'interfaccia
