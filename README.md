@@ -1,4 +1,4 @@
-Questo è il repository lato backend del progetto.
+Questo è il repository lato backend del progetto "Movether".
 
 Per avviarlo è necessario aver installato python versione 3.9 o superiore.
 E' inoltre consigliato l'uso dei virtual environments.
@@ -24,7 +24,7 @@ py -3 -m data-import.py
 flask --app app.py run --debug
 ```
 
-Una volta avviato il server basta andare alla pagina [http://localhost:5000](http://localhost:5000) per accedere alla versione legacy del frontend (cioè la versione realizzata prima di creare un progetto specifico in React del frontend).
+Una volta avviato il server andare all'indirizzo [http://localhost:3000](http://localhost:3000) (dopo aver avviato il progetto del frontend) per accedere alla versione in React/Next.js oppure all'indirizzo [http://localhost:5000](http://localhost:5000) per accedere alla versione "legacy" del frontend (cioè la versione realizzata prima di creare un progetto specifico in React del frontend).
 
 ## Struttura del progetto
 
@@ -40,3 +40,4 @@ Nella cartella Documentazione/ sono presenti i vari documenti contenenti le spec
 * Diagramma ER
 * Documentazione API
 * Mockup dell'interfaccia
+Sono inoltre presenti al suo interno le cartelle Videos/ e Screenshots/ con dimostrazioni d'uso del progetto.
