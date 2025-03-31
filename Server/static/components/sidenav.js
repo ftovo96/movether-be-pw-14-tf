@@ -3,7 +3,7 @@ const AppSidenav = {
     initSidenav: (containerId) => {
         const navbar = `
             <div class="bg-primary-subtle d-none d-lg-block app-sidenav">
-            <h1 class="ps-3 pe-3">BudGym</h1>
+            <h1 class="ps-3 pe-3">Movether</h1>
             <div class="d-flex flex-column justify-content-center p-3 app-sidenav_content">
                 <div id="sidenav-menu" class="d-grid gap-2">
                     <a href="/static/activities/activities.html" class="btn btn-outline-primary" tabindex="-1" role="button">

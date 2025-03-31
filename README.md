@@ -32,16 +32,16 @@ Per fare test è possibile usare gli utenti:
 
 ## Struttura del progetto
 
-Nella cartella Server/ sono presenti i file del backend, nello specifico:
-* app.py, il "main" del server
-* La cartella data/ contenente i file csv utilizzati dallo script data-import.py per inizializzare il database. Modificando i vari file e rieseguendo lo script è possibile modificare i dati del database.
-* La cartella entities/ contenente le api responsabili delle varie entità del progetto e le query per la manipolazione dei dati
-* La cartella static/ contentente le risorse web che costituiscono la vecchia versione del frontend del progetto.
+Nella cartella [Server/](https://github.com/ftovo96/movether-be-pw-14-tf/tree/main/Server) sono presenti i file del backend, nello specifico:
+* [app.py](https://github.com/ftovo96/movether-be-pw-14-tf/blob/main/Server/app.py), il "main" del server
+* La cartella [data/](https://github.com/ftovo96/movether-be-pw-14-tf/tree/main/Server/data) contenente i file csv utilizzati dallo script [data-import.py](https://github.com/ftovo96/movether-be-pw-14-tf/blob/main/Server/data-import.py) per inizializzare il database. Modificando i vari file e rieseguendo lo script è possibile modificare i dati del database.
+* La cartella [entities/](https://github.com/ftovo96/movether-be-pw-14-tf/tree/main/Server/entities) contenente le api responsabili delle varie entità del progetto e le query per la manipolazione dei dati
+* La cartella [static/](https://github.com/ftovo96/movether-be-pw-14-tf/tree/main/Server/static) contentente le risorse web che costituiscono la vecchia versione del frontend del progetto.
 
-Nella cartella Documentazione/ sono presenti i vari documenti contenenti le specifiche del progetto:
-* Casi d'uso
-* Diagramma casi d'uso
-* Diagramma ER
-* Documentazione API
-* Mockup dell'interfaccia
-Sono inoltre presenti al suo interno le cartelle Videos/ e Screenshots/ con dimostrazioni d'uso del progetto.
+Nella cartella [Documentazione/](https://github.com/ftovo96/movether-be-pw-14-tf/tree/main/Documentazione) sono presenti i vari documenti contenenti le specifiche del progetto:
+* [Casi d'uso](https://github.com/ftovo96/movether-be-pw-14-tf/blob/main/Documentazione/Casi%20d'uso.pdf)
+* [Diagramma casi d'uso](https://github.com/ftovo96/movether-be-pw-14-tf/blob/main/Documentazione/Diagramma%20casi%20d'uso.pdf)
+* [Diagramma ER](https://github.com/ftovo96/movether-be-pw-14-tf/blob/main/Documentazione/Diagramma%20ER.pdf)
+* [Documentazione API](https://github.com/ftovo96/movether-be-pw-14-tf/blob/main/Documentazione/Documentazione%20API.pdf)
+* [Mockup dell'interfaccia](https://github.com/ftovo96/movether-be-pw-14-tf/blob/main/Documentazione/Mockup%20Interfaccia.pdf)
+Sono inoltre presenti al suo interno le cartelle [Videos/](https://github.com/ftovo96/movether-be-pw-14-tf/tree/main/Documentazione/Videos) e [Screenshots/](https://github.com/ftovo96/movether-be-pw-14-tf/tree/main/Documentazione/Screenshots) con dimostrazioni d'uso del progetto.
