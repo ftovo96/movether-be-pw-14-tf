@@ -66,7 +66,7 @@ def getUserPoints(userId):
     cursor.execute(query)
     usedPoints = cursor.fetchone()["points"]
     connection.close()
-    userPoints = points - (usedPoints * 10)
+    userPoints = points - usedPoints
     if userPoints < 0:
         userPoints = 0
     result = {

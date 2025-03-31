@@ -23,6 +23,7 @@ def getActivities(params):
         ) as ACT_TIMES,
         ACT.max_partecipants,
         ACT.allow_anonymous,
+        ACT.description,
         COMPANY.id as COMPANY_ID,
         COMPANY.name as COMPANY_NAME,
         (
@@ -41,13 +42,19 @@ def getActivities(params):
         LEFT JOIN COMPANY
         ON ACT.company_id = COMPANY.id
         WHERE (
+            ACT.date >=  DATE('now') AND
             ACT.SPORT LIKE '%{params["sport"]}%' AND
-            ACT.LOCATION LIKE '%{params["location"]}%' AND
-            COMPANY.name LIKE '%{params["search"]}%' AND
-            ACT.date >=  DATE('now')
+            ACT.LOCATION LIKE '%{params["location"]}%' 
         """
     if params["companyId"] is not None:
         query += f"""AND COMPANY.id = {params["companyId"]}"""
+    if params["search"]:
+        query += f"""AND (COMPANY.name LIKE '%{params["search"]}%' """
+        if not params["sport"]:
+            query += f"""OR ACT.SPORT LIKE '%{params["search"]}%' """
+        if not params["location"]:
+            query += f"""OR ACT.LOCATION LIKE '%{params["search"]}%' """
+        query += f""")"""
     query += f"""
         )
         GROUP BY ACT.date, ACT.sport, ACT.company_id
@@ -69,6 +76,7 @@ def getActivities(params):
             "max_partecipants": activity["max_partecipants"],
             "company_id": activity["company_id"],
             "company_name": activity["company_name"],
+            "description": activity["description"],
             "isBanned": activity["ban_count"] >= 3,
         }
         if activity["allow_anonymous"] == "True":
@@ -107,7 +115,8 @@ def getActivitiesForReservation(activityId, userId):
             FROM ACTIVITY
             WHERE (
                 ID = {activityId} AND
-                COMPANY_ID = ACT.COMPANY_ID
+                COMPANY_ID = ACT.COMPANY_ID AND
+                SPORT = ACT.SPORT
             )
         )
     """

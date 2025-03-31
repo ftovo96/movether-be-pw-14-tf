@@ -160,11 +160,16 @@ def getReservations(params):
         ON RES.id = FEEDBACK.reservation_id
         WHERE (
             user_id = '{params["userId"]}' AND
-            --DATE(date) >= DATE('now') AND
             ACT.SPORT LIKE '%{params["sport"]}%' AND
-            ACT.LOCATION LIKE '%{params["location"]}%' AND
-            COMPANY.name LIKE '%{params["search"]}%'
-        )
+            ACT.LOCATION LIKE '%{params["location"]}%' """
+    if params["search"]:
+        query += f"""AND (COMPANY.name LIKE '%{params["search"]}%' """
+        if not params["sport"]:
+            query += f"""OR ACT.SPORT LIKE '%{params["search"]}%' """
+        if not params["location"]:
+            query += f"""OR ACT.LOCATION LIKE '%{params["search"]}%' """
+        query += f""")"""
+    query += """)
         ORDER BY 
             date(ACT.date) DESC,
             ACT.time DESC
@@ -316,63 +321,3 @@ def getReservationByCode(params):
         result["validated"] = "false"
     print(result)
     return result
-
-# @app.route("/reservations_history", methods=['GET'])
-# def reservations_history_api():
-#     user_id = request.args.get('userId') or None
-#     if (user_id is None):
-#         response = jsonify([])
-#         response.headers.add("Access-Control-Allow-Origin", "*")
-#         return response
-#     search = request.args.get('search') or ''
-#     sport = request.args.get('sport') or ''
-#     location = request.args.get('location') or ''
-#     connection = sqlite3.connect(config.databaseName)
-#     connection.row_factory = sqlite3.Row
-#     cursor = connection.cursor()
-#     query = f""" SELECT *,
-#         FEEDBACK.id as FEEDBACK_ID,
-#         COMPANY.id as COMPANY_ID,
-#         COMPANY.name as COMPANY_NAME
-#         FROM RESERVATION
-#         LEFT JOIN ACTIVITY AS ACT
-#         ON RESERVATION.activity_id = ACT.id
-#         LEFT JOIN COMPANY
-#         ON COMPANY.id = ACT.id
-#         LEFT JOIN FEEDBACK
-#         ON RESERVATION.id = FEEDBACK.reservation_id
-#         WHERE (
-#             user_id = '{user_id}' AND
-#             DATE(date) < DATE('now') AND
-#             ACT.SPORT LIKE '%{sport}%' AND
-#             ACT.LOCATION LIKE '%{location}%' AND
-#             COMPANY.name LIKE '%{search}%'
-#         )
-#     """
-#     cursor.execute(query)
-#     reservations = cursor.fetchall()
-#     connection.close()
-#     print(reservations)
-#     result = []
-#     for reservation in reservations:
-#         print(reservation)
-#         res = {
-#             "id": reservation["id"],
-#             "activity_id": reservation["activity_id"],
-#             "partecipants": reservation["partecipants"],
-#             "sport": reservation["sport"],
-#             "date": reservation["date"],
-#             "time": reservation["time"],
-#             "location": reservation["location"],
-#             "feedback_id": reservation["feedback_id"],
-#             "score": reservation["score"],
-#             "message": reservation["message"],
-#             "company_id": reservation["company_id"],
-#             "company_name": reservation["company_name"],
-#         }
-#         print(res)
-#         result.append(res)
-#     # return result
-#     response = jsonify(result)
-#     response.headers.add("Access-Control-Allow-Origin", "*")
-#     return response
