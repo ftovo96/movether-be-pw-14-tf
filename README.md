@@ -26,6 +26,10 @@ flask --app app.py run --debug
 
 Una volta avviato il server andare all'indirizzo [http://localhost:3000](http://localhost:3000) (dopo aver avviato il progetto del frontend) per accedere alla versione in React/Next.js oppure all'indirizzo [http://localhost:5000](http://localhost:5000) per accedere alla versione "legacy" del frontend (cioè la versione realizzata prima di creare un progetto specifico in React del frontend).
 
+Per fare test è possibile usare gli utenti:
+    * Rossi (email: mario.rossi@gmail.com - password: password123)
+    * Bianchi (email: rosa.bianchi@gmail.com - password: password456)
+
 ## Struttura del progetto
 
 Nella cartella Server/ sono presenti i file del backend, nello specifico:
