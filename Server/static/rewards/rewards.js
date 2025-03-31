@@ -114,7 +114,7 @@ async function loadUserPoints() {
     const result = await fetch(url)
         .then(result => result.json())
         .catch(() => null);
-    userPoints = result?.points || 5;
+    userPoints = result?.points || 0;
     updateInterface();
 }
 
