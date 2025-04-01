@@ -155,7 +155,7 @@ async function fetchReservations() {
             let badge;
             const reservationDate = new Date(`${reservation.date} ${reservation.time}`);
             const hasExpired = Date.now() > reservationDate;
-            const isExpiring = (Date.now() - reservationDate) < (24 * 60 * 60 * 1000);
+            const isExpiring = (reservationDate.getTime() - Date.now()) < (24 * 60 * 60 * 1000);
             const isDisabled = hasExpired && !isExpiring && reservation.validated === "false";
             if (reservation.validated === "true") {
                 badge = `<span class="badge text-bg-success">Validata</span>`;
@@ -271,23 +271,24 @@ async function showEditReservationModal(reservationId) {
 }
 
 async function editReservation() {
-    var url = new URL(`http://localhost:5000/reservations/${modalReservationId}`);
+    var url = new URL(`http://localhost:5000/reservation-options/${modalReservationId}`);
     // if (user.id) {
     //     url.searchParams.append('userId', user.id);
     // }
-    const activities = await fetch(url)
+    const activityOptions = await fetch(url)
         .then(result => result.json());
     const time = document.getElementById('time-select').value;
     const partecipants = document.getElementById('partecipants-select').value;
-    const activity = activities.find(activity => activity.time === time);
-    console.log(`Reserve activity ${activity.id} at time ${time} for ${partecipants} people`);
+    const activityOption = activityOptions.find(activity => activity.time === time);
+    console.log(`Reserve activity ${activityOption.id} at time ${time} for ${partecipants} people`);
     await fetch(`http://localhost:5000/reservations/${modalReservationId}`, {
         method: 'PUT',
         body: JSON.stringify({
-            "activityId": activity.id,
-            // "time": time,
+            "activityId": activityOption.id,
+            "time": time,
             "partecipants": partecipants,
             "userId": user.id,
+            "reservationId": modalReservationId,
         }),
     })
         .then(result => {
