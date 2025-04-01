@@ -58,16 +58,23 @@ def activitiesForReservationEdit(reservationId):
                     WHERE RESERVATION.id = {reservationId}
                 )
             ) AND
-            (
-                ACT.ID IN (
-                    SELECT RESERVATION.activity_id
-                    FROM RESERVATION
-                    WHERE RESERVATION.id = {reservationId}
-                ) OR
-                ACT.ID NOT IN (
-                    SELECT RESERVATION.activity_id
-                    FROM RESERVATION
-                )
+            ACT.COMPANY_ID = (
+                SELECT COMPANY_ID
+                    FROM ACTIVITY
+                    WHERE ID = (
+                        SELECT RESERVATION.activity_id
+                        FROM RESERVATION
+                        WHERE RESERVATION.id = {reservationId}
+                    )
+            ) AND
+            ACT.SPORT = (
+                SELECT SPORT
+                    FROM ACTIVITY
+                    WHERE ID = (
+                        SELECT RESERVATION.activity_id
+                        FROM RESERVATION
+                        WHERE RESERVATION.id = {reservationId}
+                    )
             )
             
     """
